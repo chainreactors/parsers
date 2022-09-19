@@ -10,7 +10,6 @@ func NewResponse(resp *http.Response) *Response {
 		RawContent: ReadRaw(resp),
 	}
 	response.BodyContent, response.HeaderContent, _ = SplitHttpRaw(response.RawContent)
-	response.Hashes = NewHashes(response.RawContent)
 	response.Title = MatchTitle(string(response.RawContent))
 	response.Server = resp.Header.Get("Server")
 	response.Language = MatchLanguageWithRaw(string(response.HeaderContent))
@@ -25,7 +24,6 @@ func NewResponseWithRaw(raw []byte) *Response {
 		RawContent: raw,
 	}
 	response.BodyContent, response.HeaderContent, _ = SplitHttpRaw(response.RawContent)
-	response.Hashes = NewHashes(response.RawContent)
 	response.Title = MatchTitle(string(response.RawContent))
 	response.Server, _ = MatchOne(ServerRegexp, string(response.HeaderContent))
 	response.Language = MatchLanguageWithRaw(string(response.HeaderContent))
@@ -42,6 +40,10 @@ type Response struct {
 	Server        string
 	Title         string
 	*Hashes
+}
+
+func (r *Response) Hash() {
+	r.Hashes = NewHashes(r.RawContent)
 }
 
 func NewHashes(content []byte) *Hashes {
