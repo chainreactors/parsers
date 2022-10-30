@@ -31,15 +31,15 @@ func NewResponseWithRaw(raw []byte) *Response {
 }
 
 type Response struct {
-	*http.Response
-	SSLHost       []string
-	BodyContent   []byte
-	HeaderContent []byte
-	RawContent    []byte
-	Language      string
-	Server        string
-	Title         string
-	*Hashes
+	*http.Response `json:"-"`
+	SSLHost        []string `json:"sslhsot"`
+	BodyContent    []byte   `json:"-"`
+	HeaderContent  []byte   `json:"-"`
+	RawContent     []byte   `json:"raw"`
+	Language       string   `json:"language"`
+	Server         string   `json:"server"`
+	Title          string   `json:"title"`
+	*Hashes        `json:"hashes"`
 }
 
 func (r *Response) Hash() {
@@ -60,11 +60,17 @@ func NewHashes(content []byte) *Hashes {
 }
 
 type Hashes struct {
-	BodyMd5       string
-	HeaderMd5     string
-	RawMd5        string
-	BodySimhash   string
-	HeaderSimhash string
-	RawSimhash    string
-	BodyMmh3      string
+	BodyMd5       string `json:"body-md5"`
+	HeaderMd5     string `json:"header-md5"`
+	RawMd5        string `json:"raw-md5"`
+	BodySimhash   string `json:"body-simhash"`
+	HeaderSimhash string `json:"header-simhash"`
+	RawSimhash    string `json:"raw-simhash"`
+	BodyMmh3      string `json:"body-mmh3"`
+}
+
+var SimhashThreshold uint8 = 8
+
+func (hs *Hashes) Compare(other *Hashes) (uint8, uint8, uint8) {
+	return SimhashCompare(hs.BodySimhash, other.BodySimhash), SimhashCompare(hs.HeaderSimhash, other.HeaderSimhash), SimhashCompare(hs.RawSimhash, other.RawSimhash)
 }
