@@ -59,19 +59,11 @@ func standBase64(braw []byte) []byte {
 	return buffer.Bytes()
 }
 
-func XorEncode(bs []byte, keys []byte, cursor int) []byte {
-	if len(keys) == 0 {
-		return bs
-	}
-
-	newbs := make([]byte, len(bs))
-	for i, b := range bs {
-		newbs[i] = b ^ keys[(i+cursor)%len(keys)]
-	}
-	return newbs
-}
-
 func Simhash(raw []byte) string {
 	sh := simhash.NewSimhash()
 	return fmt.Sprintf("%x", sh.GetSimhash(sh.NewWordFeatureSet(raw)))
+}
+
+func SimhashCompare(s, other string) uint8 {
+	return simhash.Compare(parseHex(s), parseHex(other))
 }
