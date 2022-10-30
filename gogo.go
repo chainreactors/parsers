@@ -45,6 +45,28 @@ func (result *GOGOResult) GetURL() string {
 	}
 }
 
+func (result *GOGOResult) AddVuln(vuln *Vuln) {
+	vuln.Severity = SeverityMap[vuln.SeverityLevel]
+	result.Vulns = append(result.Vulns, vuln)
+}
+
+func (result *GOGOResult) AddVulns(vulns []*Vuln) {
+	for _, v := range vulns {
+		result.AddVuln(v)
+	}
+}
+
+func (result *GOGOResult) AddFramework(f *Framework) {
+	f.FromStr = FrameFromMap[f.From]
+	result.Frameworks = append(result.Frameworks, f)
+}
+
+func (result *GOGOResult) AddFrameworks(fs []*Framework) {
+	for _, f := range fs {
+		result.AddFramework(f)
+	}
+}
+
 func (result *GOGOResult) NoFramework() bool {
 	if len(result.Frameworks) == 0 {
 		return true

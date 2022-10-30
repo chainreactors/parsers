@@ -13,7 +13,7 @@ const (
 	FrameFromGUESS
 )
 
-var frameFromMap = map[int]string{
+var FrameFromMap = map[int]string{
 	FrameFromACTIVE:   "active",
 	FrameFromICO:      "ico",
 	FrameFromNOTFOUND: "404",
@@ -83,11 +83,11 @@ const (
 	SeverityCRITICAL
 )
 
-var SeverityMap = map[string]int{
-	"info":     SeverityINFO,
-	"medium":   SeverityMEDIUM,
-	"high":     SeverityHIGH,
-	"critical": SeverityCRITICAL,
+var SeverityMap = map[int]string{
+	SeverityINFO:     "info",
+	SeverityMEDIUM:   "medium",
+	SeverityHIGH:     "high",
+	SeverityCRITICAL: "critical",
 }
 
 type Vuln struct {
