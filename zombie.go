@@ -1,6 +1,6 @@
 package parsers
 
-var zombieMap = map[string]string{
+var ZombieMap = map[string]string{
 	"mariadb":   "MYSQL",
 	"mysql":     "MYSQL",
 	"rdp":       "RDP",

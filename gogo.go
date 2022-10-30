@@ -7,6 +7,15 @@ import (
 	"strings"
 )
 
+func NewGOGOResult(ip, port string) *GOGOResult {
+	return &GOGOResult{
+		Ip:       ip,
+		Port:     port,
+		Protocol: "tcp",
+		Status:   "tcp",
+	}
+}
+
 type GOGOResult struct {
 	Ip         string     `json:"ip"`                   // ip
 	Port       string     `json:"port"`                 // port
@@ -46,7 +55,9 @@ func (result *GOGOResult) GetURL() string {
 }
 
 func (result *GOGOResult) AddVuln(vuln *Vuln) {
-	vuln.Severity = SeverityMap[vuln.SeverityLevel]
+	if vuln.Severity == "" {
+		vuln.Severity = SeverityMap[vuln.SeverityLevel]
+	}
 	result.Vulns = append(result.Vulns, vuln)
 }
 
@@ -57,7 +68,9 @@ func (result *GOGOResult) AddVulns(vulns []*Vuln) {
 }
 
 func (result *GOGOResult) AddFramework(f *Framework) {
-	f.FromStr = FrameFromMap[f.From]
+	if f.FromStr == "" {
+		f.FromStr = FrameFromMap[f.From]
+	}
 	result.Frameworks = append(result.Frameworks, f)
 }
 
@@ -279,7 +292,7 @@ func (rd *GOGOData) ToValues(outType string) string {
 func (rd *GOGOData) ToZombie() string {
 	var zms []ZombieInput
 	for _, r := range rd.Data {
-		if service, ok := zombieMap[strings.ToLower(r.GetFirstFramework())]; ok {
+		if service, ok := ZombieMap[strings.ToLower(r.GetFirstFramework())]; ok {
 			zms = append(zms, ZombieInput{
 				IP:      r.Ip,
 				Port:    r.Port,
