@@ -17,18 +17,19 @@ func NewGOGOResult(ip, port string) *GOGOResult {
 }
 
 type GOGOResult struct {
-	Ip         string     `json:"ip"`                   // ip
-	Port       string     `json:"port"`                 // port
-	Uri        string     `json:"uri,omitempty"`        // uri
-	Os         string     `json:"os,omitempty"`         // os
-	Host       string     `json:"host,omitempty"`       // host
-	Frameworks Frameworks `json:"frameworks,omitempty"` // framework
-	Vulns      Vulns      `json:"vulns,omitempty"`
-	Protocol   string     `json:"protocol"` // protocol
-	Status     string     `json:"status"`   // http_stat
-	Language   string     `json:"language"`
-	Title      string     `json:"title"`   // title
-	Midware    string     `json:"midware"` // midware
+	Ip         string              `json:"ip"`                   // ip
+	Port       string              `json:"port"`                 // port
+	Uri        string              `json:"uri,omitempty"`        // uri
+	Os         string              `json:"os,omitempty"`         // os
+	Host       string              `json:"host,omitempty"`       // host
+	Frameworks Frameworks          `json:"frameworks,omitempty"` // framework
+	Vulns      Vulns               `json:"vulns,omitempty"`
+	Extracteds map[string][]string `json:"extracted,omitempty"`
+	Protocol   string              `json:"protocol"` // protocol
+	Status     string              `json:"status"`   // http_stat
+	Language   string              `json:"language"`
+	Title      string              `json:"title"`   // title
+	Midware    string              `json:"midware"` // midware
 }
 
 func (result *GOGOResult) IsHttp() bool {
@@ -54,29 +55,15 @@ func (result *GOGOResult) GetURL() string {
 	}
 }
 
-func (result *GOGOResult) AddVuln(vuln *Vuln) {
-	if vuln.Severity == "" {
-		vuln.Severity = SeverityMap[vuln.SeverityLevel]
-	}
-	result.Vulns = append(result.Vulns, vuln)
-}
-
-func (result *GOGOResult) AddVulns(vulns []*Vuln) {
-	for _, v := range vulns {
-		result.AddVuln(v)
-	}
-}
-
-func (result *GOGOResult) AddFramework(f *Framework) {
-	if f.FromStr == "" {
-		f.FromStr = FrameFromMap[f.From]
-	}
-	result.Frameworks = append(result.Frameworks, f)
-}
-
-func (result *GOGOResult) AddFrameworks(fs []*Framework) {
-	for _, f := range fs {
-		result.AddFramework(f)
+func (result *GOGOResult) GetExtractStat() string {
+	if len(result.Extracteds) > 0 {
+		var s []string
+		for name, ss := range result.Extracteds {
+			s = append(s, fmt.Sprintf("%s:%ditems", name, len(ss)))
+		}
+		return fmt.Sprintf("[ extracts: %s ]", strings.Join(s, ", "))
+	} else {
+		return ""
 	}
 }
 
