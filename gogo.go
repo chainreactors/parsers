@@ -124,7 +124,7 @@ func (result *GOGOResult) ColorOutput() string {
 }
 
 func (result *GOGOResult) FullOutput() string {
-	s := fmt.Sprintf("[+] %s\t%s\t%s\t%s\t%s [%s] %s %s \n", result.GetURL(), result.Midware, result.Language, result.Frameworks.ToString(), result.Host, result.Status, result.Title, result.Vulns.ToString())
+	s := fmt.Sprintf("[+] %s\t%s\t%s\t%s\t%s [%s] %s %s %s\n", result.GetURL(), result.Midware, result.Language, result.Frameworks.ToString(), result.Host, result.Status, result.Title, result.Vulns.ToString(), result.GetExtractStat())
 	return s
 }
 
