@@ -60,9 +60,9 @@ func (result *GOGOResult) GetExtractStat() string {
 		var s []string
 		for name, ss := range result.Extracteds {
 			if tmps := strings.Join(ss, ","); len(tmps) < 50 {
-				s = append(s, fmt.Sprintf("%s:%ditems", name, tmps))
+				s = append(s, fmt.Sprintf("%s:%s", name, tmps))
 			} else {
-				s = append(s, fmt.Sprintf("%s:%ditems", name, len(ss)))
+				s = append(s, fmt.Sprintf("%s:%d items", name, len(ss)))
 			}
 		}
 		return fmt.Sprintf("[ extracts: %s ]", strings.Join(s, ", "))
