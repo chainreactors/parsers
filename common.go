@@ -13,6 +13,7 @@ const (
 	FrameFromGUESS
 )
 
+var NoGuess bool
 var FrameFromMap = map[int]string{
 	FrameFromACTIVE:   "active",
 	FrameFromICO:      "ico",
@@ -49,7 +50,7 @@ type Frameworks []*Framework
 func (fs Frameworks) ToString() string {
 	frameworkStrs := make([]string, len(fs))
 	for i, f := range fs {
-		if f.From == FrameFromGUESS {
+		if f.From == FrameFromGUESS && NoGuess {
 			continue
 		}
 		frameworkStrs[i] = f.ToString()
