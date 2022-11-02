@@ -198,6 +198,19 @@ func (config *GOGOConfig) GetTargetName() string {
 
 type GOGOResults []*GOGOResult
 
+func (rs GOGOResults) FilterWithString(name string) GOGOResults {
+	// 过滤指定数据
+	var results GOGOResults
+	if strings.Contains(name, "::") {
+		kv := strings.Split(name, "::")
+		results = rs.Filter(kv[0], kv[1], "::")
+	} else if strings.Contains(name, "==") {
+		kv := strings.Split(name, "==")
+		results = rs.Filter(kv[0], kv[1], "==")
+	}
+	return results
+}
+
 func (rs GOGOResults) Filter(k, v, op string) GOGOResults {
 	var filtedres GOGOResults
 
@@ -240,13 +253,7 @@ func (rd *GOGOData) Filter(name string) {
 		//results = rd.Data.Filter()
 	} else {
 		// 过滤指定数据
-		if strings.Contains(name, "::") {
-			kv := strings.Split(name, "::")
-			results = rd.Data.Filter(kv[0], kv[1], "::")
-		} else if strings.Contains(name, "==") {
-			kv := strings.Split(name, "==")
-			results = rd.Data.Filter(kv[0], kv[1], "==")
-		}
+		results = rd.Data.FilterWithString(name)
 	}
 	rd.Data = results
 }
