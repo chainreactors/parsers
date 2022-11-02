@@ -213,7 +213,7 @@ func (rs GOGOResults) FilterWithString(name string) GOGOResults {
 
 func (rs GOGOResults) Filter(k, v, op string) GOGOResults {
 	var filtedres GOGOResults
-
+	v = strings.ToLower(v)
 	for _, result := range rs {
 		if result.Filter(k, v, op) {
 			filtedres = append(filtedres, result)
