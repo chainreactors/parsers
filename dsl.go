@@ -2,11 +2,12 @@ package parsers
 
 import "strings"
 
-func DSLParserToString(s string) string {
-	return string(DSLParser(s))
+func DSLParserToString(s string) (string, bool) {
+	bs, ok := DSLParser(s)
+	return string(bs), ok
 }
 
-func DSLParser(s string) []byte {
+func DSLParser(s string) ([]byte, bool) {
 	var bs []byte
 	var operator, content string
 
@@ -14,7 +15,7 @@ func DSLParser(s string) []byte {
 		operator = s[:i]
 		content = s[i+1:]
 	} else {
-		return []byte(s)
+		return []byte(s), false
 	}
 
 	switch operator {
@@ -29,7 +30,7 @@ func DSLParser(s string) []byte {
 	case "md5":
 		bs = []byte(Md5Hash([]byte(content)))
 	default:
-		bs = []byte(content)
+		return []byte(content), false
 	}
-	return bs
+	return bs, true
 }
