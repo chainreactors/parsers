@@ -201,13 +201,24 @@ type GOGOResults []*GOGOResult
 func (rs GOGOResults) FilterWithString(name string) GOGOResults {
 	// 过滤指定数据
 	var results GOGOResults
-	if strings.Contains(name, "::") {
-		kv := strings.Split(name, "::")
-		results = rs.Filter(kv[0], kv[1], "::")
-	} else if strings.Contains(name, "==") {
-		kv := strings.Split(name, "==")
-		results = rs.Filter(kv[0], kv[1], "==")
+	if name == "focus" {
+		results = rs.Filter("frame", "focus", "::")
+	} else if name == "vuln" {
+		results = rs.Filter("vuln", "high", "::")
+		results = append(results, rs.Filter("vuln", "critical", "::")...)
+	} else if name == "domain" {
+		//todo
+	} else {
+		// 过滤指定数据
+		if strings.Contains(name, "::") {
+			kv := strings.Split(name, "::")
+			results = rs.Filter(kv[0], kv[1], "::")
+		} else if strings.Contains(name, "==") {
+			kv := strings.Split(name, "==")
+			results = rs.Filter(kv[0], kv[1], "==")
+		}
 	}
+
 	return results
 }
 
@@ -240,22 +251,8 @@ type GOGOData struct {
 	Data   GOGOResults `json:"data"`
 }
 
-func (rd *GOGOData) Filter(name string) {
-	var results GOGOResults
-	if name == "focus" {
-		results = rd.Data.Filter("frame", "focus", "::")
-	} else if name == "vuln" {
-		results = rd.Data.Filter("vuln", "high", "::")
-		results = append(results, rd.Data.Filter("vuln", "critical", "::")...)
-	} else if name == "domain" {
-		//rd.Data = rd.Data.Filter()
-		//} else if name == "network" {
-		//results = rd.Data.Filter()
-	} else {
-		// 过滤指定数据
-		results = rd.Data.FilterWithString(name)
-	}
-	rd.Data = results
+func (rd *GOGOData) Filter(name string) GOGOResults {
+	return rd.Data.FilterWithString(name)
 }
 
 func (rd *GOGOData) ToConfig() string {
