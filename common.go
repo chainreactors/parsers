@@ -24,8 +24,8 @@ var FrameFromMap = map[int]string{
 type Framework struct {
 	Name    string `json:"name"`
 	Version string `json:"version"`
-	From    int    `json:"-"`
-	FromStr string `json:"from"`
+	From    int    `json:"from"`
+	//FromStr string `json:"from"`
 	IsFocus bool   `json:"is_focus"`
 	Data    string `json:"-"`
 }
@@ -40,7 +40,7 @@ func (f Framework) ToString() string {
 		s += ":" + strings.Replace(f.Version, ":", "_", -1)
 	}
 	if f.From != FrameFromNone {
-		s += ":" + f.FromStr
+		s += ":" + FrameFromMap[f.From]
 	}
 	return s
 }
@@ -48,6 +48,7 @@ func (f Framework) ToString() string {
 type Frameworks []*Framework
 
 func (fs Frameworks) ToString() string {
+
 	frameworkStrs := make([]string, len(fs))
 	for i, f := range fs {
 		if f.From == FrameFromGUESS && NoGuess {
@@ -92,11 +93,11 @@ var SeverityMap = map[int]string{
 }
 
 type Vuln struct {
-	Name          string                 `json:"name"`
-	Payload       map[string]interface{} `json:"payload,omitempty"`
-	Detail        map[string]interface{} `json:"detail,omitempty"`
-	Severity      string                 `json:"severity"`
-	SeverityLevel int                    `json:"-"`
+	Name    string                 `json:"name"`
+	Payload map[string]interface{} `json:"payload,omitempty"`
+	Detail  map[string]interface{} `json:"detail,omitempty"`
+	//Severity      string                 `json:"severity"`
+	SeverityLevel int `json:"severity"`
 }
 
 func (v *Vuln) GetPayload() string {
@@ -124,7 +125,7 @@ func (vs Vulns) ToString() string {
 	var s string
 
 	for _, vuln := range vs {
-		s += fmt.Sprintf("[ %s: %s ] ", vuln.Severity, vuln.ToString())
+		s += fmt.Sprintf("[ %s: %s ] ", SeverityMap[vuln.SeverityLevel], vuln.ToString())
 	}
 	return s
 }
