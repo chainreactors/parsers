@@ -21,6 +21,21 @@ var FrameFromMap = map[int]string{
 	FrameFromGUESS:    "guess",
 }
 
+func GetFrameFrom(s string) int {
+	switch s {
+	case "active":
+		return FrameFromACTIVE
+	case "404":
+		return FrameFromNOTFOUND
+	case "ico":
+		return FrameFromICO
+	case "guess":
+		return FrameFromGUESS
+	default:
+		return FrameFromNone
+	}
+}
+
 type Framework struct {
 	Name    string `json:"name"`
 	Version string `json:"version"`
@@ -83,7 +98,23 @@ const (
 	SeverityMEDIUM
 	SeverityHIGH
 	SeverityCRITICAL
+	SeverityUnknown
 )
+
+func GetSeverityLevel(s string) int {
+	switch s {
+	case "info":
+		return SeverityINFO
+	case "medium":
+		return SeverityMEDIUM
+	case "high":
+		return SeverityHIGH
+	case "critical":
+		return SeverityCRITICAL
+	default:
+		return SeverityUnknown
+	}
+}
 
 var SeverityMap = map[int]string{
 	SeverityINFO:     "info",
