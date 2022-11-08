@@ -157,8 +157,18 @@ func (result *GOGOResult) Filter(k, v, op string) bool {
 	var matchfunc func(string, string) bool
 	if op == "::" {
 		matchfunc = strings.Contains
-	} else {
+	} else if op == "==" {
 		matchfunc = strings.EqualFold
+	} else if op == "!:" {
+		matchfunc = func(s1 string, s2 string) bool {
+			return !strings.Contains(s1, s2)
+		}
+	} else if op == "!=" {
+		matchfunc = func(s1 string, s2 string) bool {
+			return !strings.EqualFold(s1, s2)
+		}
+	} else {
+		logs.Log.Warn("illegal operator, please input one of [::, ==, !:, !=]")
 	}
 
 	if matchfunc(strings.ToLower(result.Get(k)), v) {
