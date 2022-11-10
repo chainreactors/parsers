@@ -139,6 +139,6 @@ func getCookies(resp *http.Response) map[string]string {
 }
 
 func parseHex(s string) uint64 {
-	i, _ := strconv.ParseInt(s, 16, 64)
-	return uint64(i)
+	i, _ := strconv.ParseUint(s, 16, 64)
+	return i
 }
