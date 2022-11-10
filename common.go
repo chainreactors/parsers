@@ -38,10 +38,10 @@ func GetFrameFrom(s string) int {
 
 type Framework struct {
 	Name    string `json:"name"`
-	Version string `json:"version"`
-	From    int    `json:"from"`
-	//FromStr string `json:"from"`
-	IsFocus bool   `json:"is_focus"`
+	Version string `json:"version,omitempty"`
+	From    int    `json:"from,omitempty"`
+	Tag     string `json:"tag,omitempty"`
+	IsFocus bool   `json:"is_focus,omitempty"`
 	Data    string `json:"-"`
 }
 
@@ -124,11 +124,10 @@ var SeverityMap = map[int]string{
 }
 
 type Vuln struct {
-	Name    string                 `json:"name"`
-	Payload map[string]interface{} `json:"payload,omitempty"`
-	Detail  map[string]interface{} `json:"detail,omitempty"`
-	//Severity      string                 `json:"severity"`
-	SeverityLevel int `json:"severity"`
+	Name          string                 `json:"name"`
+	Payload       map[string]interface{} `json:"payload,omitempty"`
+	Detail        map[string]interface{} `json:"detail,omitempty"`
+	SeverityLevel int                    `json:"severity"`
 }
 
 func (v *Vuln) GetPayload() string {
