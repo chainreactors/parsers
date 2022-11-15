@@ -226,6 +226,12 @@ func (rs GOGOResults) FilterWithString(name string) GOGOResults {
 		} else if strings.Contains(name, "==") {
 			kv := strings.Split(name, "==")
 			results = rs.Filter(kv[0], kv[1], "==")
+		} else if strings.Contains(name, "!=") {
+			kv := strings.Split(name, "!=")
+			results = rs.Filter(kv[0], kv[1], "!=")
+		} else if strings.Contains(name, "!:") {
+			kv := strings.Split(name, "!:")
+			results = rs.Filter(kv[0], kv[1], "!:")
 		}
 	}
 
