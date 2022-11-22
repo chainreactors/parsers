@@ -70,7 +70,7 @@ func (f *Framework) String() string {
 			}
 		}
 	}
-	return s.String()
+	return strings.TrimSpace(s.String())
 }
 
 func (f *Framework) IsGuess() bool {
