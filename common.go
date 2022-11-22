@@ -6,7 +6,7 @@ import (
 )
 
 const (
-	FrameFromNone = iota
+	FrameFromDefault = iota
 	FrameFromACTIVE
 	FrameFromICO
 	FrameFromNOTFOUND
@@ -15,7 +15,7 @@ const (
 
 var NoGuess bool
 var frameFromMap = map[int]string{
-	FrameFromNone:     "",
+	FrameFromDefault:  "",
 	FrameFromACTIVE:   "active",
 	FrameFromICO:      "ico",
 	FrameFromNOTFOUND: "404",
@@ -33,18 +33,18 @@ func GetFrameFrom(s string) int {
 	case "guess":
 		return FrameFromGUESS
 	default:
-		return FrameFromNone
+		return FrameFromDefault
 	}
 }
 
 type Framework struct {
-	Name    string   `json:"name"`
-	Version string   `json:"version,omitempty"`
-	From    int      `json:"-"`
-	Froms   []int    `json:"froms,omitempty"`
-	Tags    []string `json:"tags,omitempty"`
-	IsFocus bool     `json:"is_focus,omitempty"`
-	Data    string   `json:"-"`
+	Name    string       `json:"name"`
+	Version string       `json:"version,omitempty"`
+	From    int          `json:"-"`
+	Froms   map[int]bool `json:"froms,omitempty"`
+	Tags    []string     `json:"tags,omitempty"`
+	IsFocus bool         `json:"is_focus,omitempty"`
+	Data    string       `json:"-"`
 }
 
 func (f *Framework) String() string {
@@ -58,21 +58,21 @@ func (f *Framework) String() string {
 		s.WriteString(":" + strings.Replace(f.Version, ":", "_", -1))
 	}
 
-	if len(f.Froms) > 0 {
+	if len(f.Froms) > 1 {
 		s.WriteString(":")
-		for _, from := range f.Froms {
-			if from != FrameFromNone {
+		for from, _ := range f.Froms {
+			if from != FrameFromDefault {
 				s.WriteString(frameFromMap[from] + ",")
 			}
 		}
-		return s.String()[:s.Len()-2]
+		return s.String()[:s.Len()-1]
 	}
 	return s.String()
 }
 
 func (f *Framework) IsGuess() bool {
 	var is bool
-	for _, from := range f.Froms {
+	for from, _ := range f.Froms {
 		if from == FrameFromGUESS {
 			is = true
 		} else {
@@ -86,9 +86,9 @@ type Frameworks map[string]*Framework
 
 func (fs Frameworks) Add(other *Framework) {
 	if frame, ok := fs[other.Name]; ok {
-		frame.Froms = append(frame.Froms, other.From)
+		frame.Froms[other.From] = true
 	} else {
-		other.Froms = []int{other.From}
+		other.Froms = map[int]bool{other.From: true}
 		fs[other.Name] = other
 	}
 }
