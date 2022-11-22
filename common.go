@@ -62,10 +62,9 @@ func (f *Framework) String() string {
 		s.WriteString(":")
 		for from, _ := range f.Froms {
 			if from != FrameFromDefault {
-				s.WriteString(frameFromMap[from] + ",")
+				s.WriteString(frameFromMap[from] + " ")
 			}
 		}
-		return s.String()[:s.Len()-1]
 	}
 	return s.String()
 }
