@@ -63,6 +63,12 @@ func (f *Framework) String() string {
 		for from, _ := range f.Froms {
 			s.WriteString(frameFromMap[from] + " ")
 		}
+	} else {
+		for from, _ := range f.Froms {
+			if from != FrameFromDefault {
+				s.WriteString(frameFromMap[from])
+			}
+		}
 	}
 	return s.String()
 }
