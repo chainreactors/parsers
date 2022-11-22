@@ -78,13 +78,13 @@ func (result *GOGOResult) NoFramework() bool {
 	return false
 }
 
-func (result *GOGOResult) GetFirstFramework() string {
+func (result *GOGOResult) GetFirstFramework() *Framework {
 	if !result.NoFramework() {
 		for _, frame := range result.Frameworks {
-			return frame.Name
+			return frame
 		}
 	}
-	return ""
+	return nil
 }
 
 func (result *GOGOResult) Get(key string) string {
@@ -305,7 +305,7 @@ func (rd *GOGOData) ToValues(outType string) string {
 func (rd *GOGOData) ToZombie() string {
 	var zms []ZombieInput
 	for _, r := range rd.Data {
-		if service, ok := ZombieMap[strings.ToLower(r.GetFirstFramework())]; ok {
+		if service, ok := ZombieMap[strings.ToLower(r.GetFirstFramework().Name)]; ok {
 			zms = append(zms, ZombieInput{
 				IP:      r.Ip,
 				Port:    r.Port,
