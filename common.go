@@ -15,7 +15,7 @@ const (
 
 var NoGuess bool
 var frameFromMap = map[int]string{
-	FrameFromDefault:  "",
+	FrameFromDefault:  "finger",
 	FrameFromACTIVE:   "active",
 	FrameFromICO:      "ico",
 	FrameFromNOTFOUND: "404",
@@ -61,9 +61,7 @@ func (f *Framework) String() string {
 	if len(f.Froms) > 1 {
 		s.WriteString(":")
 		for from, _ := range f.Froms {
-			if from != FrameFromDefault {
-				s.WriteString(frameFromMap[from] + " ")
-			}
+			s.WriteString(frameFromMap[from] + " ")
 		}
 	}
 	return s.String()
