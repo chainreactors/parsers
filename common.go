@@ -14,7 +14,8 @@ const (
 )
 
 var NoGuess bool
-var FrameFromMap = map[int]string{
+var frameFromMap = map[int]string{
+	FrameFromNone:     "",
 	FrameFromACTIVE:   "active",
 	FrameFromICO:      "ico",
 	FrameFromNOTFOUND: "404",
@@ -37,39 +38,68 @@ func GetFrameFrom(s string) int {
 }
 
 type Framework struct {
-	Name    string `json:"name"`
-	Version string `json:"version,omitempty"`
-	From    int    `json:"from,omitempty"`
-	Tag     string `json:"tag,omitempty"`
-	IsFocus bool   `json:"is_focus,omitempty"`
-	Data    string `json:"-"`
+	Name    string   `json:"name"`
+	Version string   `json:"version,omitempty"`
+	From    int      `json:"-"`
+	Froms   []int    `json:"froms,omitempty"`
+	Tags    []string `json:"tags,omitempty"`
+	IsFocus bool     `json:"is_focus,omitempty"`
+	Data    string   `json:"-"`
 }
 
-func (f Framework) ToString() string {
-	var s = f.Name
+func (f *Framework) String() string {
+	var s strings.Builder
 	if f.IsFocus {
-		s = "focus:" + s
+		s.WriteString("focus:")
 	}
+	s.WriteString(f.Name)
 
 	if f.Version != "" {
-		s += ":" + strings.Replace(f.Version, ":", "_", -1)
+		s.WriteString(":" + strings.Replace(f.Version, ":", "_", -1))
 	}
-	if f.From != FrameFromNone {
-		s += ":" + FrameFromMap[f.From]
+
+	if len(f.Froms) > 0 {
+		s.WriteString(":")
+		for _, from := range f.Froms {
+			if from != FrameFromNone {
+				s.WriteString(frameFromMap[from] + ",")
+			}
+		}
+		return s.String()[:s.Len()-2]
 	}
-	return s
+	return s.String()
 }
 
-type Frameworks []*Framework
+func (f *Framework) IsGuess() bool {
+	var is bool
+	for _, from := range f.Froms {
+		if from == FrameFromGUESS {
+			is = true
+		} else {
+			return false
+		}
+	}
+	return is
+}
 
-func (fs Frameworks) ToString() string {
+type Frameworks map[string]*Framework
 
-	frameworkStrs := make([]string, len(fs))
-	for i, f := range fs {
-		if f.From == FrameFromGUESS && NoGuess {
+func (fs Frameworks) Add(other *Framework) {
+	if frame, ok := fs[other.Name]; ok {
+		frame.Froms = append(frame.Froms, other.From)
+	} else {
+		other.Froms = []int{other.From}
+		fs[other.Name] = other
+	}
+}
+
+func (fs Frameworks) String() string {
+	var frameworkStrs []string
+	for _, f := range fs {
+		if NoGuess && f.IsGuess() {
 			continue
 		}
-		frameworkStrs[i] = f.ToString()
+		frameworkStrs = append(frameworkStrs, f.String())
 	}
 	return strings.Join(frameworkStrs, "||")
 }
@@ -77,7 +107,7 @@ func (fs Frameworks) ToString() string {
 func (fs Frameworks) GetNames() []string {
 	var titles []string
 	for _, f := range fs {
-		if f.From != FrameFromGUESS {
+		if !f.IsGuess() {
 			titles = append(titles, f.Name)
 		}
 	}
@@ -138,7 +168,7 @@ func (v *Vuln) GetDetail() string {
 	return mapToString(v.Detail)
 }
 
-func (v *Vuln) ToString() string {
+func (v *Vuln) String() string {
 	s := v.Name
 	if payload := v.GetPayload(); payload != "" {
 		s += fmt.Sprintf(" payloads:%s", payload)
@@ -151,11 +181,11 @@ func (v *Vuln) ToString() string {
 
 type Vulns []*Vuln
 
-func (vs Vulns) ToString() string {
+func (vs Vulns) String() string {
 	var s string
 
 	for _, vuln := range vs {
-		s += fmt.Sprintf("[ %s: %s ] ", SeverityMap[vuln.SeverityLevel], vuln.ToString())
+		s += fmt.Sprintf("[ %s: %s ] ", SeverityMap[vuln.SeverityLevel], vuln.String())
 	}
 	return s
 }
