@@ -98,6 +98,9 @@ func (fs Frameworks) Add(other *Framework) {
 }
 
 func (fs Frameworks) String() string {
+	if fs == nil {
+		return ""
+	}
 	var frameworkStrs []string
 	for _, f := range fs {
 		if NoGuess && f.IsGuess() {
@@ -109,6 +112,9 @@ func (fs Frameworks) String() string {
 }
 
 func (fs Frameworks) GetNames() []string {
+	if fs == nil {
+		return nil
+	}
 	var titles []string
 	for _, f := range fs {
 		if !f.IsGuess() {
@@ -119,6 +125,9 @@ func (fs Frameworks) GetNames() []string {
 }
 
 func (fs Frameworks) IsFocus() bool {
+	if fs == nil {
+		return false
+	}
 	for _, f := range fs {
 		if f.IsFocus {
 			return true

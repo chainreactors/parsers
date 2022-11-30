@@ -306,7 +306,11 @@ func (rd *GOGOData) ToValues(outType string) string {
 func (rd *GOGOData) ToZombie() string {
 	var zms []ZombieInput
 	for _, r := range rd.Data {
-		if service, ok := ZombieMap[strings.ToLower(r.GetFirstFramework().Name)]; ok {
+		f := r.GetFirstFramework()
+		if f == nil {
+			continue
+		}
+		if service, ok := ZombieMap[strings.ToLower(f.Name)]; ok {
 			zms = append(zms, ZombieInput{
 				IP:      r.Ip,
 				Port:    r.Port,
