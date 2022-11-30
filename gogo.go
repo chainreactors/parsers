@@ -9,10 +9,11 @@ import (
 
 func NewGOGOResult(ip, port string) *GOGOResult {
 	return &GOGOResult{
-		Ip:       ip,
-		Port:     port,
-		Protocol: "tcp",
-		Status:   "tcp",
+		Ip:         ip,
+		Port:       port,
+		Protocol:   "tcp",
+		Status:     "tcp",
+		Frameworks: make(Frameworks),
 	}
 }
 
