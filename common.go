@@ -86,6 +86,15 @@ func (f *Framework) IsGuess() bool {
 	return is
 }
 
+func (f *Framework) HasTag(tag string) bool {
+	for _, t := range f.Tags {
+		if t == tag {
+			return true
+		}
+	}
+	return false
+}
+
 type Frameworks map[string]*Framework
 
 func (fs Frameworks) Add(other *Framework) {
@@ -130,6 +139,24 @@ func (fs Frameworks) IsFocus() bool {
 	}
 	for _, f := range fs {
 		if f.IsFocus {
+			return true
+		}
+	}
+	return false
+}
+
+func (fs Frameworks) HasTag(tag string) bool {
+	for _, f := range fs {
+		if f.HasTag(tag) {
+			return true
+		}
+	}
+	return false
+}
+
+func (fs Frameworks) HasFrom(from string) bool {
+	for _, f := range fs {
+		if f.Froms[GetFrameFrom(from)] {
 			return true
 		}
 	}

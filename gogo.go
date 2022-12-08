@@ -110,16 +110,20 @@ func (result *GOGOResult) Get(key string) string {
 		return result.GetBaseURL()
 	case "midware":
 		return result.Midware
-	//case "hash":
-	//	return result.Hash
 	case "language":
 		return result.Language
 	case "protocol":
 		return result.Protocol
 	case "os":
 		return result.Os
-	//case "extract":
-	//	return result.Extracts.ToString()
+	case "extract", "extracts":
+		var s strings.Builder
+		s.WriteString("[ ")
+		for k, v := range result.Extracteds {
+			s.WriteString(fmt.Sprintf("%s:%s,", k, strings.Join(v, ",")))
+		}
+		s.WriteString(" ]")
+		return s.String()
 	default:
 		return ""
 	}
@@ -161,20 +165,28 @@ func (result *GOGOResult) Filter(k, v, op string) bool {
 	if op == "::" {
 		matchfunc = strings.Contains
 	} else if op == "==" {
-		matchfunc = strings.EqualFold
-	} else if op == "!:" {
-		matchfunc = func(s1 string, s2 string) bool {
-			return !strings.Contains(s1, s2)
+		if k == "tag" {
+			return result.Frameworks.HasTag(v)
+		} else if k == "from" {
+			return result.Frameworks.HasFrom(v)
+		} else {
+			matchfunc = strings.EqualFold
 		}
+	} else if op == "!:" {
+		matchfunc = notContains
 	} else if op == "!=" {
-		matchfunc = func(s1 string, s2 string) bool {
-			return !strings.EqualFold(s1, s2)
+		if k == "tag" {
+			return !result.Frameworks.HasTag(v)
+		} else if k == "from" {
+			return !result.Frameworks.HasFrom(v)
+		} else {
+			matchfunc = notEqualFlod
 		}
 	} else {
-		logs.Log.Warn("illegal operator, please input one of [::, ==, !:, !=]")
+		logs.Log.Error("illegal operator, please input one of [::, ==, !:, !=]")
 	}
 
-	if matchfunc(strings.ToLower(result.Get(k)), v) {
+	if matchfunc(strings.ToLower(result.Get(k)), strings.ToLower(v)) {
 		return true
 	}
 	return false
@@ -243,7 +255,6 @@ func (rs GOGOResults) FilterWithString(name string) GOGOResults {
 
 func (rs GOGOResults) Filter(k, v, op string) GOGOResults {
 	var filtedres GOGOResults
-	v = strings.ToLower(v)
 	for _, result := range rs {
 		if result.Filter(k, v, op) {
 			filtedres = append(filtedres, result)

@@ -142,3 +142,11 @@ func parseHex(s string) uint64 {
 	i, _ := strconv.ParseUint(s, 16, 64)
 	return i
 }
+
+func notContains(s, substr string) bool {
+	return !strings.Contains(s, substr)
+}
+
+func notEqualFlod(s, substr string) bool {
+	return !strings.EqualFold(s, substr)
+}
