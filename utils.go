@@ -143,6 +143,10 @@ func parseHex(s string) uint64 {
 	return i
 }
 
+func slashComma(s string) string {
+	return strings.Replace(s, ",", "\\,", -1)
+}
+
 func notContains(s, substr string) bool {
 	return !strings.Contains(s, substr)
 }

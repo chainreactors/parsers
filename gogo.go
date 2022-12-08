@@ -156,10 +156,6 @@ func (result *GOGOResult) ValuesOutput(outType string) string {
 	return strings.Join(outs, "\t") + "\n"
 }
 
-func slashComma(s string) string {
-	return strings.Replace(s, ",", "\\,", -1)
-}
-
 func (result *GOGOResult) Filter(k, v, op string) bool {
 	var matchfunc func(string, string) bool
 	if op == "::" {
