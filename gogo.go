@@ -100,7 +100,7 @@ func (result *GOGOResult) Get(key string) string {
 		return result.Frameworks.String()
 	case "vulns", "vuln":
 		return result.Vulns.String()
-	case "host":
+	case "host", "cert":
 		return result.Host
 	case "title":
 		return result.Title
@@ -112,7 +112,7 @@ func (result *GOGOResult) Get(key string) string {
 		return result.Midware
 	case "language":
 		return result.Language
-	case "protocol":
+	case "protocol", "scheme":
 		return result.Protocol
 	case "os":
 		return result.Os
