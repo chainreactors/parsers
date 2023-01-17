@@ -2,6 +2,7 @@ package parsers
 
 import (
 	"fmt"
+	"regexp"
 	"strings"
 )
 
@@ -239,4 +240,54 @@ func mapToString(m map[string]interface{}) string {
 		s += fmt.Sprintf(" %s:%s ", k, v.(string))
 	}
 	return s
+}
+
+type Extracted struct {
+	Name          string   `json:"name"`
+	ExtractResult []string `json:"extract_result"`
+}
+
+func (e *Extracted) ToString() string {
+	if len(e.ExtractResult) == 1 {
+		if len(e.ExtractResult[0]) > 30 {
+			return fmt.Sprintf("%s:%s ... %d bytes", e.Name, AsciiEncode(e.ExtractResult[0][:30]), len(e.ExtractResult[0]))
+		}
+		return fmt.Sprintf("%s:%s", e.Name, AsciiEncode(e.ExtractResult[0]))
+	} else {
+		return fmt.Sprintf("%s:%d items", e.Name, len(e.ExtractResult))
+	}
+}
+
+type Extractor struct {
+	Name            string           `json:"name"` // extractor name
+	Regexps         []string         `json:"regex"`
+	Tags            []string         `json:"tags"`
+	CompiledRegexps []*regexp.Regexp `json:"-"`
+}
+
+func (e *Extractor) Compile() {
+	e.CompiledRegexps = make([]*regexp.Regexp, len(e.Regexps))
+	for i, r := range e.Regexps {
+		e.CompiledRegexps[i] = regexp.MustCompile(r)
+	}
+}
+
+func (e *Extractor) HasTag(tag string) bool {
+	for _, t := range e.Tags {
+		if t == tag {
+			return true
+		}
+	}
+	return false
+}
+
+func (e *Extractor) Extract(body string) *Extracted {
+	extracts := &Extracted{
+		Name: e.Name,
+	}
+	for _, r := range e.CompiledRegexps {
+		matches := r.FindAllString(body, -1)
+		extracts.ExtractResult = append(extracts.ExtractResult, matches...)
+	}
+	return extracts
 }
