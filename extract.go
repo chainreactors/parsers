@@ -38,6 +38,7 @@ type Extractor struct {
 	Regexps         []string         `json:"regexps"`
 	Tags            []string         `json:"tags"`
 	CompiledRegexps []*regexp.Regexp `json:"-"`
+	Cases           []string         `json:"cases"`
 }
 
 func (e *Extractor) Compile() {
@@ -66,7 +67,9 @@ func (e *Extractor) Extract(body string) *Extracted {
 	}
 	for _, r := range e.CompiledRegexps {
 		matches := r.FindAllString(body, -1)
-		extracts.ExtractResult = append(extracts.ExtractResult, matches...)
+		if len(matches) > 0 {
+			extracts.ExtractResult = append(extracts.ExtractResult, matches...)
+		}
 	}
 	return extracts
 }
@@ -84,7 +87,10 @@ func (es Extractors) Extract(content string) (extracts []*Extracted) {
 		}
 		for _, r := range regexps {
 			matches := r.FindAllString(content, -1)
-			extracted.ExtractResult = append(extracted.ExtractResult, matches...)
+			if len(matches) > 0 {
+				extracted.ExtractResult = append(extracted.ExtractResult, matches...)
+			}
+
 		}
 		extracts = append(extracts, extracted)
 	}
