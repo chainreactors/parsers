@@ -154,10 +154,3 @@ func notContains(s, substr string) bool {
 func notEqualFlod(s, substr string) bool {
 	return !strings.EqualFold(s, substr)
 }
-
-func AsciiEncode(s string) string {
-	s = strings.TrimSpace(s)
-	s = fmt.Sprintf("%q", s)
-	s = strings.Trim(s, "\"")
-	return s
-}
