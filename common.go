@@ -247,7 +247,7 @@ type Extracted struct {
 	ExtractResult []string `json:"extract_result"`
 }
 
-func (e *Extracted) ToString() string {
+func (e *Extracted) String() string {
 	if len(e.ExtractResult) == 1 {
 		if len(e.ExtractResult[0]) > 30 {
 			return fmt.Sprintf("%s:%s ... %d bytes", e.Name, AsciiEncode(e.ExtractResult[0][:30]), len(e.ExtractResult[0]))
@@ -256,6 +256,16 @@ func (e *Extracted) ToString() string {
 	} else {
 		return fmt.Sprintf("%s:%d items", e.Name, len(e.ExtractResult))
 	}
+}
+
+type Extracteds []*Extracted
+
+func (es Extracteds) String() string {
+	var s strings.Builder
+	for _, e := range es {
+		s.WriteString("[ " + e.String() + " ]")
+	}
+	return s.String() + " "
 }
 
 type Extractor struct {
@@ -288,6 +298,26 @@ func (e *Extractor) Extract(body string) *Extracted {
 	for _, r := range e.CompiledRegexps {
 		matches := r.FindAllString(body, -1)
 		extracts.ExtractResult = append(extracts.ExtractResult, matches...)
+	}
+	return extracts
+}
+
+type Extractors map[string][]*regexp.Regexp
+
+func (es Extractors) Extract(content string) (extracts []*Extracted) {
+	if len(content) == 0 {
+		return
+	}
+
+	for name, regexps := range es {
+		extracted := &Extracted{
+			Name: name,
+		}
+		for _, r := range regexps {
+			matches := r.FindAllString(content, -1)
+			extracted.ExtractResult = append(extracted.ExtractResult, matches...)
+		}
+		extracts = append(extracts, extracted)
 	}
 	return extracts
 }
