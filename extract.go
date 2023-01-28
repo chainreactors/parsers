@@ -90,9 +90,10 @@ func (es Extractors) Extract(content string) (extracts []*Extracted) {
 			if len(matches) > 0 {
 				extracted.ExtractResult = append(extracted.ExtractResult, matches...)
 			}
-
 		}
-		extracts = append(extracts, extracted)
+		if len(extracted.ExtractResult) > 0 {
+			extracts = append(extracts, extracted)
+		}
 	}
 	return extracts
 }
