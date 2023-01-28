@@ -47,3 +47,14 @@ func ToStringMap(i interface{}) map[string]string {
 		return nil
 	}
 }
+
+func MapToString(m map[string]interface{}) string {
+	if m == nil || len(m) == 0 {
+		return ""
+	}
+	var s string
+	for k, v := range m {
+		s += fmt.Sprintf(" %s:%s ", k, v.(string))
+	}
+	return s
+}

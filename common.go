@@ -2,6 +2,7 @@ package parsers
 
 import (
 	"fmt"
+	"github.com/chainreactors/parsers/iutils"
 	"strings"
 )
 
@@ -201,11 +202,11 @@ type Vuln struct {
 }
 
 func (v *Vuln) GetPayload() string {
-	return mapToString(v.Payload)
+	return iutils.MapToString(v.Payload)
 }
 
 func (v *Vuln) GetDetail() string {
-	return mapToString(v.Detail)
+	return iutils.MapToString(v.Detail)
 }
 
 func (v *Vuln) String() string {
@@ -226,17 +227,6 @@ func (vs Vulns) String() string {
 
 	for _, vuln := range vs {
 		s += fmt.Sprintf("[ %s: %s ] ", SeverityMap[vuln.SeverityLevel], vuln.String())
-	}
-	return s
-}
-
-func mapToString(m map[string]interface{}) string {
-	if m == nil || len(m) == 0 {
-		return ""
-	}
-	var s string
-	for k, v := range m {
-		s += fmt.Sprintf(" %s:%s ", k, v.(string))
 	}
 	return s
 }
