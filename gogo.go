@@ -18,19 +18,19 @@ func NewGOGOResult(ip, port string) *GOGOResult {
 }
 
 type GOGOResult struct {
-	Ip         string              `json:"ip"`                   // ip
-	Port       string              `json:"port"`                 // port
-	Uri        string              `json:"uri,omitempty"`        // uri
-	Os         string              `json:"os,omitempty"`         // os
-	Host       string              `json:"host,omitempty"`       // host
-	Frameworks Frameworks          `json:"frameworks,omitempty"` // framework
+	Ip         string              `json:"ip"`
+	Port       string              `json:"port"`
+	Uri        string              `json:"uri,omitempty"`
+	Os         string              `json:"os,omitempty"`
+	Host       string              `json:"host,omitempty"`
+	Frameworks Frameworks          `json:"frameworks,omitempty"`
 	Vulns      Vulns               `json:"vulns,omitempty"`
 	Extracteds map[string][]string `json:"extracted,omitempty"`
-	Protocol   string              `json:"protocol"` // protocol
-	Status     string              `json:"status"`   // http_stat
+	Protocol   string              `json:"protocol"`
+	Status     string              `json:"status"`
 	Language   string              `json:"language"`
-	Title      string              `json:"title"`   // title
-	Midware    string              `json:"midware"` // midware
+	Title      string              `json:"title"`
+	Midware    string              `json:"midware"`
 }
 
 func (result *GOGOResult) IsHttp() bool {

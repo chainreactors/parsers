@@ -1,0 +1,268 @@
+package parsers
+
+import (
+	"encoding/json"
+	"github.com/chainreactors/logs"
+	"strconv"
+	"strings"
+)
+
+func GetSpraySourceName(s int) string {
+	switch s {
+	case 1:
+		return "check"
+	case 2:
+		return "random"
+	case 3:
+		return "index"
+	case 4:
+		return "redirect"
+	case 5:
+		return "crawl"
+	case 6:
+		return "active"
+	case 7:
+		return "word"
+	case 8:
+		return "waf"
+	case 9:
+		return "rule"
+	case 10:
+		return "bak"
+	case 11:
+		return "common"
+	default:
+		return "unknown"
+	}
+}
+
+type SprayResult struct {
+	Number       int        `json:"number"`
+	IsValid      bool       `json:"valid"`
+	IsFuzzy      bool       `json:"fuzzy"`
+	UrlString    string     `json:"url"`
+	Path         string     `json:"path"`
+	Host         string     `json:"host"`
+	BodyLength   int        `json:"body_length"`
+	ExceedLength bool       `json:"-"`
+	HeaderLength int        `json:"header_length"`
+	RedirectURL  string     `json:"redirect_url,omitempty"`
+	FrontURL     string     `json:"front_url,omitempty"`
+	Status       int        `json:"status"`
+	Spended      int64      `json:"spend"` // 耗时, 毫秒
+	ContentType  string     `json:"content_type"`
+	Title        string     `json:"title"`
+	Frameworks   Frameworks `json:"frameworks"`
+	Extracteds   Extracteds `json:"extracts"`
+	ErrString    string     `json:"error"`
+	Reason       string     `json:"reason"`
+	Source       int        `json:"source"`
+	ReqDepth     int        `json:"depth"`
+	Distance     uint8      `json:"distance"`
+	*Hashes      `json:"hashes"`
+}
+
+func (bl *SprayResult) Get(key string) string {
+	switch key {
+	case "url":
+		return bl.UrlString
+	case "host":
+		return bl.Host
+	case "content_type", "type":
+		return bl.ContentType
+	case "title":
+		return bl.Title
+	case "redirect":
+		return bl.RedirectURL
+	case "md5":
+		if bl.Hashes != nil {
+			return bl.Hashes.BodyMd5
+		} else {
+			return ""
+		}
+	case "simhash":
+		if bl.Hashes != nil {
+			return bl.Hashes.BodySimhash
+		} else {
+			return ""
+		}
+	case "mmh3":
+		if bl.Hashes != nil {
+			return bl.Hashes.BodySimhash
+		} else {
+			return ""
+		}
+	case "stat", "status":
+		return strconv.Itoa(bl.Status)
+	case "spend":
+		return strconv.Itoa(int(bl.Spended)) + "ms"
+	case "length":
+		return strconv.Itoa(bl.BodyLength)
+	case "sim", "distance":
+		return "sim:" + strconv.Itoa(int(bl.Distance))
+	case "source":
+		return GetSpraySourceName(bl.Source)
+	case "extract":
+		return bl.Extracteds.String()
+	case "frame", "framework":
+		return bl.Frameworks.String()
+	case "full":
+		return bl.String()
+	default:
+		return ""
+	}
+}
+
+func (bl *SprayResult) Additional(key string) string {
+	if key == "frame" || key == "extract" {
+		return bl.Get(key)
+	} else if v := bl.Get(key); v != "" {
+		return " [" + v + "]"
+	} else {
+		return ""
+	}
+}
+
+func (bl *SprayResult) Format(probes []string) string {
+	var line strings.Builder
+	if bl.FrontURL != "" {
+		line.WriteString("\t")
+		line.WriteString(bl.FrontURL)
+		line.WriteString(" -> ")
+	}
+	line.WriteString(bl.UrlString)
+	if bl.Host != "" {
+		line.WriteString(" (" + bl.Host + ")")
+	}
+
+	if bl.Reason != "" {
+		line.WriteString(" ,")
+		line.WriteString(bl.Reason)
+	}
+	if bl.ErrString != "" {
+		line.WriteString(" ,err: ")
+		line.WriteString(bl.ErrString)
+		return line.String()
+	}
+
+	for _, p := range probes {
+		line.WriteString(" ")
+		line.WriteString(bl.Additional(p))
+	}
+
+	return line.String()
+}
+
+func (bl *SprayResult) ColorString() string {
+	var line strings.Builder
+	line.WriteString(logs.GreenLine("[" + GetSpraySourceName(bl.Source) + "] "))
+	if bl.FrontURL != "" {
+		line.WriteString(logs.CyanLine(bl.FrontURL))
+		line.WriteString(" --> ")
+	}
+	line.WriteString(logs.GreenLine(bl.UrlString))
+	if bl.Host != "" {
+		line.WriteString(" (" + bl.Host + ")")
+	}
+
+	if bl.Reason != "" {
+		line.WriteString(" [reason: ")
+		line.WriteString(logs.YellowBold(bl.Reason))
+		line.WriteString("]")
+	}
+	if bl.ErrString != "" {
+		line.WriteString(" [err: ")
+		line.WriteString(logs.RedBold(bl.ErrString))
+		line.WriteString("]")
+		return line.String()
+	}
+
+	line.WriteString(" - ")
+	line.WriteString(logs.GreenBold(strconv.Itoa(bl.Status)))
+	line.WriteString(" - ")
+	line.WriteString(logs.YellowBold(strconv.Itoa(bl.BodyLength)))
+	if bl.ExceedLength {
+		line.WriteString(logs.Red("(exceed)"))
+	}
+	line.WriteString(" - ")
+	line.WriteString(logs.YellowBold(strconv.Itoa(int(bl.Spended)) + "ms"))
+	line.WriteString(logs.GreenLine(bl.Additional("title")))
+	if bl.Distance != 0 {
+		line.WriteString(logs.GreenLine(bl.Additional("sim")))
+	}
+	line.WriteString(logs.Cyan(bl.Frameworks.String()))
+	line.WriteString(logs.Cyan(bl.Extracteds.String()))
+	if bl.RedirectURL != "" {
+		line.WriteString(" --> ")
+		line.WriteString(logs.CyanLine(bl.RedirectURL))
+		line.WriteString(" ")
+	}
+	if len(bl.Extracteds) > 0 {
+		for _, e := range bl.Extracteds {
+			line.WriteString("\n  " + e.Name + " (" + strconv.Itoa(len(e.ExtractResult)) + ") items : \n\t")
+			line.WriteString(logs.GreenLine(strings.Join(e.ExtractResult, "\n\t")))
+		}
+	}
+	return line.String()
+}
+
+func (bl *SprayResult) String() string {
+	var line strings.Builder
+	line.WriteString(logs.GreenLine("[" + GetSpraySourceName(bl.Source) + "] "))
+	if bl.FrontURL != "" {
+		line.WriteString(bl.FrontURL)
+		line.WriteString(" --> ")
+	}
+	line.WriteString(bl.UrlString)
+	if bl.Host != "" {
+		line.WriteString(" (" + bl.Host + ")")
+	}
+
+	if bl.Reason != "" {
+		line.WriteString(" [reason: ")
+		line.WriteString(bl.Reason)
+		line.WriteString("]")
+	}
+	if bl.ErrString != "" {
+		line.WriteString(" [err: ")
+		line.WriteString(bl.ErrString)
+		line.WriteString("]")
+		return line.String()
+	}
+
+	line.WriteString(" - ")
+	line.WriteString(strconv.Itoa(bl.Status))
+	line.WriteString(" - ")
+	line.WriteString(strconv.Itoa(bl.BodyLength))
+	if bl.ExceedLength {
+		line.WriteString("(exceed)")
+	}
+	line.WriteString(" - ")
+	line.WriteString(strconv.Itoa(int(bl.Spended)) + "ms")
+	line.WriteString(bl.Additional("title"))
+	if bl.Distance != 0 {
+		line.WriteString(logs.GreenLine(bl.Additional("sim")))
+	}
+	line.WriteString(bl.Frameworks.String())
+	line.WriteString(bl.Extracteds.String())
+	if bl.RedirectURL != "" {
+		line.WriteString(" --> ")
+		line.WriteString(bl.RedirectURL)
+		line.WriteString(" ")
+	}
+	if len(bl.Extracteds) > 0 {
+		for _, e := range bl.Extracteds {
+			line.WriteString("\n  " + e.Name + " (" + strconv.Itoa(len(e.ExtractResult)) + ") items : \n\t")
+			line.WriteString(strings.Join(e.ExtractResult, "\n\t"))
+		}
+	}
+	return line.String()
+}
+
+func (bl *SprayResult) Jsonify() string {
+	bs, err := json.Marshal(bl)
+	if err != nil {
+		return ""
+	}
+	return string(bs)
+}
