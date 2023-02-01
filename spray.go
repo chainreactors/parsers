@@ -105,7 +105,13 @@ func (bl *SprayResult) Get(key string) string {
 	case "extract":
 		return bl.Extracteds.String()
 	case "frame", "framework":
-		return bl.Frameworks.String()
+		var s strings.Builder
+		for _, f := range bl.Frameworks {
+			s.WriteString(" [")
+			s.WriteString(f.String())
+			s.WriteString("]")
+		}
+		return s.String()
 	case "full":
 		return bl.String()
 	default:

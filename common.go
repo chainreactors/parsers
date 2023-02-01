@@ -111,12 +111,14 @@ func (fs Frameworks) String() string {
 	if fs == nil {
 		return ""
 	}
-	var frameworkStrs []string
+	frameworkStrs := make([]string, len(fs))
+	i := 0
 	for _, f := range fs {
 		if NoGuess && f.IsGuess() {
 			continue
 		}
-		frameworkStrs = append(frameworkStrs, f.String())
+		frameworkStrs[i] = f.String()
+		i++
 	}
 	return strings.Join(frameworkStrs, "||")
 }
