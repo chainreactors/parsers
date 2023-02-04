@@ -196,8 +196,8 @@ func (bl *SprayResult) ColorString() string {
 	if bl.Distance != 0 {
 		line.WriteString(logs.GreenLine(bl.Additional("sim")))
 	}
-	line.WriteString(logs.Cyan(bl.Frameworks.String()))
-	line.WriteString(logs.Cyan(bl.Extracteds.String()))
+	line.WriteString(logs.Cyan(bl.Additional("frame")))
+	line.WriteString(logs.Cyan(bl.Additional("extract")))
 	if bl.RedirectURL != "" {
 		line.WriteString(" --> ")
 		line.WriteString(logs.CyanLine(bl.RedirectURL))
@@ -249,8 +249,8 @@ func (bl *SprayResult) String() string {
 	if bl.Distance != 0 {
 		line.WriteString(logs.GreenLine(bl.Additional("sim")))
 	}
-	line.WriteString(bl.Frameworks.String())
-	line.WriteString(bl.Extracteds.String())
+	line.WriteString(bl.Additional("frame"))
+	line.WriteString(bl.Additional("extract"))
 	if bl.RedirectURL != "" {
 		line.WriteString(" --> ")
 		line.WriteString(bl.RedirectURL)
