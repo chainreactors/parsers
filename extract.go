@@ -74,26 +74,20 @@ func (e *Extractor) Extract(body string) *Extracted {
 	return extracts
 }
 
-type Extractors map[string][]*regexp.Regexp
+type Extractors map[string][]*Extractor
 
-func (es Extractors) Extract(content string) (extracts []*Extracted) {
+func (es Extractors) Extract(content string) (extracteds []*Extracted) {
 	if len(content) == 0 {
 		return
 	}
 
-	for name, regexps := range es {
-		extracted := &Extracted{
-			Name: name,
-		}
-		for _, r := range regexps {
-			matches := r.FindAllString(content, -1)
-			if len(matches) > 0 {
-				extracted.ExtractResult = append(extracted.ExtractResult, matches...)
+	for _, extract := range es {
+		for _, e := range extract {
+			extracted := e.Extract(content)
+			if extracted.ExtractResult != nil {
+				extracteds = append(extracteds, extracted)
 			}
 		}
-		if len(extracted.ExtractResult) > 0 {
-			extracts = append(extracts, extracted)
-		}
 	}
-	return extracts
+	return extracteds
 }
