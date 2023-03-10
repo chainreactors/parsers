@@ -272,7 +272,7 @@ func (rs GOGOResults) GetValues(key string) []string {
 }
 
 type GOGOData struct {
-	Config GOGOConfig  `json:"config"`
+	Config *GOGOConfig `json:"config"`
 	IP     string      `json:"ip"`
 	Data   GOGOResults `json:"data"`
 }
