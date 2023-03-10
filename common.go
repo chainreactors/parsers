@@ -222,7 +222,7 @@ func (v *Vuln) String() string {
 	return s
 }
 
-type Vulns []*Vuln
+type Vulns map[string]*Vuln
 
 func (vs Vulns) String() string {
 	var s string
