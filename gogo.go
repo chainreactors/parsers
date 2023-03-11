@@ -14,6 +14,7 @@ func NewGOGOResult(ip, port string) *GOGOResult {
 		Protocol:   "tcp",
 		Status:     "tcp",
 		Frameworks: make(Frameworks),
+		Vulns:      make(Vulns),
 	}
 }
 
