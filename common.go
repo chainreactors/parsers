@@ -45,7 +45,7 @@ type Framework struct {
 	Froms   map[int]bool `json:"froms,omitempty"`
 	Tags    []string     `json:"tags,omitempty"`
 	IsFocus bool         `json:"is_focus,omitempty"`
-	Data    string       `json:"-"`
+	Data    []byte       `json:"-"`
 }
 
 func (f *Framework) String() string {
