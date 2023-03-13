@@ -17,15 +17,15 @@ var (
 	SessionRegexp = regexp.MustCompile("(?i) (.*SESS.*?ID)")
 )
 
-func MatchOne(reg *regexp.Regexp, s string) (string, bool) {
-	matched := reg.FindStringSubmatch(s)
-	if matched == nil {
+func MatchOne(reg *regexp.Regexp, s []byte) (string, bool) {
+	matched := reg.FindSubmatch(s)
+	if len(matched) == 0 {
 		return "", false
 	}
 	if len(matched) == 1 {
 		return "", true
 	} else {
-		return strings.TrimSpace(matched[1]), true
+		return strings.TrimSpace(string(matched[1])), true
 	}
 }
 
@@ -77,17 +77,14 @@ func ReadHeader(resp *http.Response) []byte {
 	return []byte(header)
 }
 
-func MatchTitle(content string) string {
-	if content == "" {
-		return ""
-	}
+func MatchTitle(content []byte) string {
 	title, ok := MatchOne(TitleRegexp, content)
 	if ok {
 		return title
 	} else if len(content) > 13 {
-		return content[0:13]
+		return string(content[0:13])
 	} else {
-		return content
+		return string(content)
 	}
 }
 
@@ -110,7 +107,7 @@ func MatchLanguage(resp *http.Response) string {
 	}
 }
 
-func MatchLanguageWithRaw(content string) string {
+func MatchLanguageWithRaw(content []byte) string {
 	powered, ok := MatchOne(XPBRegexp, content)
 	if ok {
 		return powered
