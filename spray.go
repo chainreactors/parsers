@@ -107,9 +107,7 @@ func (bl *SprayResult) Get(key string) string {
 	case "frame", "framework":
 		var s strings.Builder
 		for _, f := range bl.Frameworks {
-			s.WriteString(" [")
-			s.WriteString(f.String())
-			s.WriteString("]")
+			s.WriteString(" [" + f.Tags[0] + ":" + f.String() + "]")
 		}
 		return s.String()
 	case "full":
