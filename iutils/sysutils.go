@@ -14,9 +14,9 @@ var (
 	cwtime = getcwtime()
 )
 
-func IsWin() bool {
+func IsLinux() bool {
 	os := runtime.GOOS
-	if os == "windows" {
+	if os == "linux" {
 		return true
 	}
 	return false
