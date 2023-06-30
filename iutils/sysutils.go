@@ -22,6 +22,22 @@ func IsLinux() bool {
 	return false
 }
 
+func IsWin() bool {
+	os := runtime.GOOS
+	if os == "windows" {
+		return true
+	}
+	return false
+}
+
+func IsMac() bool {
+	os := runtime.GOOS
+	if os == "darwin" {
+		return true
+	}
+	return false
+}
+
 func getcwtime() time.Time {
 	dir, _ := os.Getwd()
 	dirinfo, _ := os.Stat(dir)
