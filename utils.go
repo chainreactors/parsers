@@ -81,7 +81,12 @@ func MatchTitle(content []byte) string {
 	title, ok := MatchOne(TitleRegexp, content)
 	if ok {
 		return title
-	} else if len(content) > 13 {
+	}
+	return ""
+}
+
+func MatchCharacter(content []byte) string {
+	if len(content) > 13 {
 		return string(content[0:13])
 	} else {
 		return string(content)

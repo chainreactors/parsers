@@ -11,7 +11,11 @@ func NewResponse(resp *http.Response) *Response {
 	}
 
 	response.BodyContent, response.HeaderContent, _ = SplitHttpRaw(response.RawContent)
-	response.Title = MatchTitle(response.RawContent)
+	if title := MatchTitle(response.RawContent); title != "" {
+		response.Title = title
+	} else {
+		response.Title = MatchCharacter(response.RawContent)
+	}
 	response.Server = resp.Header.Get("Server")
 	response.Language = MatchLanguageWithRaw(response.HeaderContent)
 	if resp.TLS != nil {
@@ -25,7 +29,11 @@ func NewResponseWithRaw(raw []byte) *Response {
 		RawContent: raw,
 	}
 	response.BodyContent, response.HeaderContent, _ = SplitHttpRaw(response.RawContent)
-	response.Title = MatchTitle(response.RawContent)
+	if title := MatchTitle(response.RawContent); title != "" {
+		response.Title = title
+	} else {
+		response.Title = MatchCharacter(response.RawContent)
+	}
 	response.Server, _ = MatchOne(ServerRegexp, response.HeaderContent)
 	response.Language = MatchLanguageWithRaw(response.HeaderContent)
 	return response
