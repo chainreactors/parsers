@@ -5,57 +5,74 @@ import (
 )
 
 func NewResponse(resp *http.Response) *Response {
-	response := &Response{
-		Response:   resp,
-		RawContent: ReadRaw(resp),
+	r := &Response{
+		Content: NewContent(ReadRaw(resp)),
 	}
 
-	response.BodyContent, response.HeaderContent, _ = SplitHttpRaw(response.RawContent)
-	if title := MatchTitle(response.RawContent); title != "" {
-		response.HasTitle = true
-		response.Title = title
+	if title := MatchTitle(r.Raw); title != "" {
+		r.HasTitle = true
+		r.Title = title
 	} else {
-		response.Title = MatchCharacter(response.RawContent)
+		r.Title = MatchCharacter(r.Raw)
 	}
-	response.Server = resp.Header.Get("Server")
-	response.Language = MatchLanguageWithRaw(response.HeaderContent)
+	r.Server = resp.Header.Get("Server")
+	r.Language = MatchLanguageWithRaw(r.Header)
 	if resp.TLS != nil {
-		response.SSLHost = resp.TLS.PeerCertificates[0].DNSNames
+		r.SSLHost = resp.TLS.PeerCertificates[0].DNSNames
 	}
-	return response
+
+	for resp = resp.Request.Response; resp != nil; {
+		r.History = append(r.History, NewContent(ReadRaw(resp)))
+		resp = resp.Request.Response
+	}
+	return r
 }
 
 func NewResponseWithRaw(raw []byte) *Response {
-	response := &Response{
-		RawContent: raw,
+	resp := &Response{
+		Content: NewContent(raw),
 	}
-	response.BodyContent, response.HeaderContent, _ = SplitHttpRaw(response.RawContent)
-	if title := MatchTitle(response.RawContent); title != "" {
-		response.HasTitle = true
-		response.Title = title
+
+	if title := MatchTitle(resp.Raw); title != "" {
+		resp.HasTitle = true
+		resp.Title = title
 	} else {
-		response.Title = MatchCharacter(response.RawContent)
+		resp.Title = MatchCharacter(resp.Raw)
 	}
-	response.Server, _ = MatchOne(ServerRegexp, response.HeaderContent)
-	response.Language = MatchLanguageWithRaw(response.HeaderContent)
-	return response
+	resp.Server, _ = MatchOne(ServerRegexp, resp.Header)
+	resp.Language = MatchLanguageWithRaw(resp.Header)
+
+	return resp
 }
 
 type Response struct {
-	*http.Response `json:"-"`
-	SSLHost        []string `json:"sslhsot"`
-	BodyContent    []byte   `json:"-"`
-	HeaderContent  []byte   `json:"-"`
-	RawContent     []byte   `json:"raw"`
-	Language       string   `json:"language"`
-	Server         string   `json:"server"`
-	Title          string   `json:"title"`
-	HasTitle       bool     `json:"-"`
-	*Hashes        `json:"hashes"`
+	SSLHost  []string `json:"sslhsot"`
+	Language string   `json:"language"`
+	Server   string   `json:"server"`
+	Title    string   `json:"title"`
+	HasTitle bool     `json:"-"`
+	*Content
+	History []*Content `json:"history"`
+	*Hashes `json:"hashes"`
+}
+
+func NewContent(raw []byte) *Content {
+	body, header, _ := SplitHttpRaw(raw)
+	return &Content{
+		Body:   body,
+		Header: header,
+		Raw:    raw,
+	}
+}
+
+type Content struct {
+	Body   []byte `json:"-"`
+	Header []byte `json:"-"`
+	Raw    []byte `json:"raw"`
 }
 
 func (r *Response) Hash() {
-	r.Hashes = NewHashes(r.RawContent)
+	r.Hashes = NewHashes(r.Raw)
 }
 
 func NewHashes(content []byte) *Hashes {
