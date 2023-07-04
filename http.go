@@ -76,7 +76,7 @@ type Content struct {
 	SSLHost []string `json:"sslhsot"`
 }
 
-func ContentMap(content *Content) map[string]interface{} {
+func (content *Content) ContentMap() map[string]interface{} {
 	return map[string]interface{}{
 		"content": content.Raw,
 		"cert":    strings.Join(content.SSLHost, ","),
