@@ -22,7 +22,11 @@ func NewResponse(resp *http.Response) *Response {
 	}
 
 	for resp = resp.Request.Response; resp != nil; {
-		r.History = append(r.History, NewContent(ReadRaw(resp)))
+		content := NewContent(ReadRaw(resp))
+		if resp.TLS != nil {
+			content.SSLHost = resp.TLS.PeerCertificates[0].DNSNames
+		}
+		r.History = append(r.History, content)
 		resp = resp.Request.Response
 	}
 	return r
@@ -46,11 +50,10 @@ func NewResponseWithRaw(raw []byte) *Response {
 }
 
 type Response struct {
-	SSLHost  []string `json:"sslhsot"`
-	Language string   `json:"language"`
-	Server   string   `json:"server"`
-	Title    string   `json:"title"`
-	HasTitle bool     `json:"-"`
+	Language string `json:"language"`
+	Server   string `json:"server"`
+	Title    string `json:"title"`
+	HasTitle bool   `json:"-"`
 	*Content
 	History []*Content `json:"history"`
 	*Hashes `json:"hashes"`
@@ -66,9 +69,10 @@ func NewContent(raw []byte) *Content {
 }
 
 type Content struct {
-	Body   []byte `json:"-"`
-	Header []byte `json:"-"`
-	Raw    []byte `json:"raw"`
+	Body    []byte   `json:"-"`
+	Header  []byte   `json:"-"`
+	Raw     []byte   `json:"raw"`
+	SSLHost []string `json:"sslhsot"`
 }
 
 func (r *Response) Hash() {
