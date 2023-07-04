@@ -12,6 +12,7 @@ func NewResponse(resp *http.Response) *Response {
 
 	response.BodyContent, response.HeaderContent, _ = SplitHttpRaw(response.RawContent)
 	if title := MatchTitle(response.RawContent); title != "" {
+		response.HasTitle = true
 		response.Title = title
 	} else {
 		response.Title = MatchCharacter(response.RawContent)
@@ -30,6 +31,7 @@ func NewResponseWithRaw(raw []byte) *Response {
 	}
 	response.BodyContent, response.HeaderContent, _ = SplitHttpRaw(response.RawContent)
 	if title := MatchTitle(response.RawContent); title != "" {
+		response.HasTitle = true
 		response.Title = title
 	} else {
 		response.Title = MatchCharacter(response.RawContent)
@@ -48,6 +50,7 @@ type Response struct {
 	Language       string   `json:"language"`
 	Server         string   `json:"server"`
 	Title          string   `json:"title"`
+	HasTitle       bool     `json:"-"`
 	*Hashes        `json:"hashes"`
 }
 
