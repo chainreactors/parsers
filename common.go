@@ -12,6 +12,7 @@ const (
 	FrameFromICO
 	FrameFromNOTFOUND
 	FrameFromGUESS
+	FrameFromRedirect
 )
 
 var NoGuess bool
@@ -21,6 +22,7 @@ var frameFromMap = map[int]string{
 	FrameFromICO:      "ico",
 	FrameFromNOTFOUND: "404",
 	FrameFromGUESS:    "guess",
+	FrameFromRedirect: "redirect",
 }
 
 func GetFrameFrom(s string) int {
