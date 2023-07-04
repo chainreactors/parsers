@@ -2,6 +2,7 @@ package parsers
 
 import (
 	"net/http"
+	"strings"
 )
 
 func NewResponse(resp *http.Response) *Response {
@@ -73,6 +74,13 @@ type Content struct {
 	Header  []byte   `json:"-"`
 	Raw     []byte   `json:"raw"`
 	SSLHost []string `json:"sslhsot"`
+}
+
+func ContentMap(content *Content) map[string]interface{} {
+	return map[string]interface{}{
+		"content": content.Raw,
+		"cert":    strings.Join(content.SSLHost, ","),
+	}
 }
 
 func (r *Response) Hash() {
