@@ -43,7 +43,7 @@ func GetFrameFrom(s string) int {
 type Framework struct {
 	Name    string       `json:"name"`
 	Version string       `json:"version,omitempty"`
-	From    int          `json:"-"`
+	From    int          `json:"-"` // 指纹可能会有多个来源, 指纹合并时会将多个来源记录到froms中
 	Froms   map[int]bool `json:"froms,omitempty"`
 	Tags    []string     `json:"tags,omitempty"`
 	IsFocus bool         `json:"is_focus,omitempty"`
@@ -62,10 +62,11 @@ func (f *Framework) String() string {
 	}
 
 	if len(f.Froms) > 1 {
-		s.WriteString(":")
+		s.WriteString(":(")
 		for from, _ := range f.Froms {
 			s.WriteString(frameFromMap[from] + " ")
 		}
+		s.WriteString(")")
 	} else {
 		for from, _ := range f.Froms {
 			if from != FrameFromDefault {
