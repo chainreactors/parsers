@@ -2,7 +2,7 @@ package parsers
 
 import (
 	"fmt"
-	"github.com/chainreactors/parsers/iutils"
+	iutils "github.com/chainreactors/utils/baseutils"
 	"strings"
 )
 
