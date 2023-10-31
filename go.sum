@@ -2,6 +2,8 @@ github.com/chainreactors/files v0.0.0-20230731174853-acee21c8c45a h1:NdYhUYzzqyf
 github.com/chainreactors/files v0.0.0-20230731174853-acee21c8c45a/go.mod h1:/Xa9YXhjBlaC33JTD6ZTJFig6pcplak2IDcovf42/6A=
 github.com/chainreactors/logs v0.0.0-20231027075331-6c5f5ec35435 h1:4vftAbNWVoOq5FzsU5pMksMpDjGDVtyYkEmE4OMczEU=
 github.com/chainreactors/logs v0.0.0-20231027075331-6c5f5ec35435/go.mod h1:VZFqkFDGmp7/JOMeraW+YI7kTGcgz9fgc/HArVFnrGQ=
+github.com/chainreactors/logs v0.0.0-20231027080134-7a11bb413460 h1:QYmvaEZHa0e3aQ9Aui9gkm3klPO+yHo5SoPTkoltr78=
+github.com/chainreactors/logs v0.0.0-20231027080134-7a11bb413460/go.mod h1:VZFqkFDGmp7/JOMeraW+YI7kTGcgz9fgc/HArVFnrGQ=
 github.com/chainreactors/utils v0.0.0-20230928082055-ef5e1ae47f3e h1:N78CueJGO0wT5IU19LAV+7+g8kXNeghj1lRuWDHya5s=
 github.com/chainreactors/utils v0.0.0-20230928082055-ef5e1ae47f3e/go.mod h1:NKSu1V6EC4wa8QHtPfiJHlH9VjGfUQOx5HADK0xry3Y=
 github.com/go-dedup/megophone v0.0.0-20170830025436-f01be21026f5 h1:4U+x+EB1P66zwYgTjxWXSOT8vF+651Ksr1lojiCZnT8=

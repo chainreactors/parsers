@@ -6,7 +6,6 @@ import (
 	"io/ioutil"
 	"net/http"
 	"regexp"
-	"strconv"
 	"strings"
 )
 
@@ -138,11 +137,6 @@ func getCookies(resp *http.Response) map[string]string {
 		cookies[cookie.Name] = cookie.Value
 	}
 	return cookies
-}
-
-func parseHex(s string) uint64 {
-	i, _ := strconv.ParseUint(s, 16, 64)
-	return i
 }
 
 func slashComma(s string) string {
