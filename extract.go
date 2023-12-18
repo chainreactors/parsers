@@ -2,6 +2,7 @@ package parsers
 
 import (
 	"fmt"
+	"github.com/chainreactors/utils/encode"
 	"github.com/chainreactors/utils/iutils"
 	"regexp"
 	"strings"
@@ -44,7 +45,7 @@ type Extractor struct {
 func (e *Extractor) Compile() {
 	e.CompiledRegexps = make([]*regexp.Regexp, len(e.Regexps))
 	for i, r := range e.Regexps {
-		if parsed, ok := DSLParserToString(iutils.ToString(r)); ok {
+		if parsed, ok := encode.DSLParserToString(iutils.ToString(r)); ok {
 			e.CompiledRegexps[i] = regexp.MustCompile(parsed)
 		} else {
 			e.CompiledRegexps[i] = regexp.MustCompile(iutils.ToString(r))

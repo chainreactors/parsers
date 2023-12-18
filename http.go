@@ -1,6 +1,7 @@
 package parsers
 
 import (
+	"github.com/chainreactors/utils/encode"
 	"net/http"
 	"strings"
 )
@@ -90,13 +91,13 @@ func (r *Response) Hash() {
 func NewHashes(content []byte) *Hashes {
 	body, header, _ := SplitHttpRaw(content)
 	return &Hashes{
-		BodyMd5:       Md5Hash(body),
-		HeaderMd5:     Md5Hash(header),
-		RawMd5:        Md5Hash(content),
-		BodySimhash:   Simhash(body),
-		HeaderSimhash: Simhash(header),
-		RawSimhash:    Simhash(content),
-		BodyMmh3:      Mmh3Hash32(body),
+		BodyMd5:       encode.Md5Hash(body),
+		HeaderMd5:     encode.Md5Hash(header),
+		RawMd5:        encode.Md5Hash(content),
+		BodySimhash:   encode.Simhash(body),
+		HeaderSimhash: encode.Simhash(header),
+		RawSimhash:    encode.Simhash(content),
+		BodyMmh3:      encode.Mmh3Hash32(body),
 	}
 }
 
@@ -113,5 +114,5 @@ type Hashes struct {
 var SimhashThreshold uint8 = 8
 
 func (hs *Hashes) Compare(other *Hashes) (uint8, uint8, uint8) {
-	return SimhashCompare(hs.BodySimhash, other.BodySimhash), SimhashCompare(hs.HeaderSimhash, other.HeaderSimhash), SimhashCompare(hs.RawSimhash, other.RawSimhash)
+	return encode.SimhashCompare(hs.BodySimhash, other.BodySimhash), encode.SimhashCompare(hs.HeaderSimhash, other.HeaderSimhash), encode.SimhashCompare(hs.RawSimhash, other.RawSimhash)
 }

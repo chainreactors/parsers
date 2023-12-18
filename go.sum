@@ -6,6 +6,8 @@ github.com/chainreactors/logs v0.0.0-20231027080134-7a11bb413460 h1:QYmvaEZHa0e3
 github.com/chainreactors/logs v0.0.0-20231027080134-7a11bb413460/go.mod h1:VZFqkFDGmp7/JOMeraW+YI7kTGcgz9fgc/HArVFnrGQ=
 github.com/chainreactors/utils v0.0.0-20230928082055-ef5e1ae47f3e h1:N78CueJGO0wT5IU19LAV+7+g8kXNeghj1lRuWDHya5s=
 github.com/chainreactors/utils v0.0.0-20230928082055-ef5e1ae47f3e/go.mod h1:NKSu1V6EC4wa8QHtPfiJHlH9VjGfUQOx5HADK0xry3Y=
+github.com/chainreactors/utils v0.0.0-20231031063336-9477f1b23886 h1:lS2T/uE9tg1MNDPrb44wawbNlD24zBlWoG0H+ZdwDAk=
+github.com/chainreactors/utils v0.0.0-20231031063336-9477f1b23886/go.mod h1:JA4eiQZm+7AsfjXBcIzIdVKBEhDCb16eNtWFCGTxlvs=
 github.com/go-dedup/megophone v0.0.0-20170830025436-f01be21026f5 h1:4U+x+EB1P66zwYgTjxWXSOT8vF+651Ksr1lojiCZnT8=
 github.com/go-dedup/megophone v0.0.0-20170830025436-f01be21026f5/go.mod h1:poR/Cp00iqtqu9ltFwl6C00sKC0HY13u/Gh05ZBmP54=
 github.com/go-dedup/simhash v0.0.0-20170904020510-9ecaca7b509c h1:mucYYQn+sMGNSxidhleonzAdwL203RxhjJGnxQU4NWU=
@@ -14,3 +16,4 @@ github.com/go-dedup/text v0.0.0-20170907015346-8bb1b95e3cb7 h1:11wFcswN+37U+Byjx
 github.com/go-dedup/text v0.0.0-20170907015346-8bb1b95e3cb7/go.mod h1:wSsK4VOECOSfSYTzkBFw+iGY7wj59e7X96ABtNj9aCQ=
 github.com/twmb/murmur3 v1.1.6 h1:mqrRot1BRxm+Yct+vavLMou2/iJt0tNVTTC0QoIjaZg=
 github.com/twmb/murmur3 v1.1.6/go.mod h1:Qq/R7NUyOfr65zD+6Q5IHKsJLwP7exErjN6lyyq3OSQ=
+github.com/twmb/murmur3 v1.1.8/go.mod h1:Qq/R7NUyOfr65zD+6Q5IHKsJLwP7exErjN6lyyq3OSQ=
