@@ -40,7 +40,7 @@ func ParseGogoData(filename string) (*GOGOData, error) {
 	res.WriteString("[")
 	res.Write(bytes.Join(lines[1:last], []byte{','}))
 	res.WriteString("]")
-	err = json.Unmarshal(content, &rd.Data)
+	err = json.Unmarshal(res.Bytes(), &rd.Data)
 	if err != nil {
 		return nil, err
 	}
