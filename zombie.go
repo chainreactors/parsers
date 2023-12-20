@@ -1,5 +1,6 @@
 package parsers
 
+// ZombieMap map zombie service to gogo finger
 var ZombieMap = map[string]string{
 	"mariadb":   "MYSQL",
 	"mysql":     "MYSQL",
@@ -18,7 +19,8 @@ var ZombieMap = map[string]string{
 }
 
 type ZombieInput struct {
-	IP      string `json:"ip"`
-	Port    string `json:"port"`
-	Service string `json:"service"`
+	IP      string            `json:"ip"`
+	Port    string            `json:"port"`
+	Service string            `json:"service"`
+	Param   map[string]string `json:"param"`
 }

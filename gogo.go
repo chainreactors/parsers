@@ -1,11 +1,51 @@
 package parsers
 
 import (
+	"bytes"
 	"encoding/json"
 	"fmt"
+	"github.com/chainreactors/files"
 	"github.com/chainreactors/logs"
 	"strings"
 )
+
+func ParseGogoData(filename string) (*GOGOData, error) {
+	var err error
+	file, err := files.Open(filename)
+	if err != nil {
+		return nil, err
+	}
+	content := files.DecryptFile(file, files.Key)
+	content = bytes.TrimSpace(content) // 去除前后空格
+	lines := bytes.Split(content, []byte{0x0a})
+
+	var finished bool = true
+	// 判断扫描是否结束
+	if !bytes.Equal(lines[len(lines)-1], []byte("[\"done\"]")) {
+		finished = false
+		logs.Log.Important("Task has not been completed,auto fix json")
+		logs.Log.Important("Task has not been completed,auto fix json")
+		logs.Log.Important("Task has not been completed,auto fix json")
+	}
+
+	// 删除最后一行
+	var last int
+	if finished {
+		last = len(lines) - 1
+	} else {
+		last = len(lines)
+	}
+	var res bytes.Buffer
+	rd := &GOGOData{}
+	res.WriteString("[")
+	res.Write(bytes.Join(lines[1:last], []byte{','}))
+	res.WriteString("]")
+	err = json.Unmarshal(content, &rd.Data)
+	if err != nil {
+		return nil, err
+	}
+	return rd, nil
+}
 
 func NewGOGOResult(ip, port string) *GOGOResult {
 	return &GOGOResult{
@@ -311,28 +351,22 @@ func (rd *GOGOData) ToValues(outType string) string {
 	return strings.Join(ss, "\n")
 }
 
-func (rd *GOGOData) ToZombie() string {
-	var zms []ZombieInput
+func (rd *GOGOData) ToZombie() []*ZombieInput {
+	var zms []*ZombieInput
 	for _, r := range rd.Data {
 		f := r.GetFirstFramework()
 		if f == nil {
 			continue
 		}
 		if service, ok := ZombieMap[strings.ToLower(f.Name)]; ok {
-			zms = append(zms, ZombieInput{
+			zms = append(zms, &ZombieInput{
 				IP:      r.Ip,
 				Port:    r.Port,
 				Service: strings.ToLower(service),
 			})
 		}
 	}
-
-	s, err := json.Marshal(zms)
-	if err != nil {
-		logs.Log.Error(err.Error())
-		return ""
-	}
-	return string(s)
+	return zms
 }
 
 func (rd *GOGOData) ToJson() string {

@@ -1,5 +1,7 @@
 github.com/chainreactors/files v0.0.0-20230731174853-acee21c8c45a h1:NdYhUYzzqyfp15Qj1ONAPV+fcymCQ/XJ509Ia2iyzvk=
 github.com/chainreactors/files v0.0.0-20230731174853-acee21c8c45a/go.mod h1:/Xa9YXhjBlaC33JTD6ZTJFig6pcplak2IDcovf42/6A=
+github.com/chainreactors/files v0.0.0-20231123083421-cea5b4ad18a8 h1:8Plpi6haQbU8NzH+JtU6bkGDWF/OeC+GFj8DIDuY5yk=
+github.com/chainreactors/files v0.0.0-20231123083421-cea5b4ad18a8/go.mod h1:/Xa9YXhjBlaC33JTD6ZTJFig6pcplak2IDcovf42/6A=
 github.com/chainreactors/logs v0.0.0-20231027075331-6c5f5ec35435 h1:4vftAbNWVoOq5FzsU5pMksMpDjGDVtyYkEmE4OMczEU=
 github.com/chainreactors/logs v0.0.0-20231027075331-6c5f5ec35435/go.mod h1:VZFqkFDGmp7/JOMeraW+YI7kTGcgz9fgc/HArVFnrGQ=
 github.com/chainreactors/logs v0.0.0-20231027080134-7a11bb413460 h1:QYmvaEZHa0e3aQ9Aui9gkm3klPO+yHo5SoPTkoltr78=
