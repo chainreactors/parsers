@@ -16,6 +16,9 @@ var ZombieMap = map[string]string{
 	"mongo":      "MONGO",
 	"ssh":        "SSH",
 	"ftp":        "FTP",
+	"socks5":     "SOCKS5",
+	"rsync":      "RSYNC",
+	"telnet":     "TELNET",
 }
 
 type ZombieInput struct {
