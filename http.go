@@ -8,13 +8,8 @@ import (
 )
 
 func NewResponse(resp *http.Response) *Response {
-	content := ReadRaw(resp)
-	charset := MatchCharset(content)
-	if charset != "" {
-		content = any2utf8(charset, content)
-	}
 	r := &Response{
-		Content: NewContent(content),
+		Content: NewContent(ReadRaw(resp)),
 	}
 
 	if title := MatchTitle(r.Raw); title != "" {
@@ -41,10 +36,6 @@ func NewResponse(resp *http.Response) *Response {
 }
 
 func NewResponseWithRaw(raw []byte) *Response {
-	charset := MatchCharset(raw)
-	if charset != "" {
-		raw = any2utf8(charset, raw)
-	}
 	resp := &Response{
 		Content: NewContent(raw),
 	}
@@ -72,6 +63,10 @@ type Response struct {
 }
 
 func NewContent(raw []byte) *Content {
+	charset := MatchCharset(raw)
+	if charset != "" {
+		raw = any2utf8(charset, raw)
+	}
 	body, header, _ := SplitHttpRaw(raw)
 	return &Content{
 		Body:   body,
