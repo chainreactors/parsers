@@ -2,7 +2,6 @@ package parsers
 
 import (
 	"github.com/chainreactors/utils/encode"
-	"golang.org/x/text/encoding/simplifiedchinese"
 	"net/http"
 	"strings"
 )
@@ -65,7 +64,7 @@ type Response struct {
 func NewContent(raw []byte) *Content {
 	charset := MatchCharset(raw)
 	if charset != "" {
-		raw = any2utf8(charset, raw)
+		raw = Any2utf8(charset, raw)
 	}
 	body, header, _ := SplitHttpRaw(raw)
 	return &Content{
@@ -120,29 +119,4 @@ var SimhashThreshold uint8 = 8
 
 func (hs *Hashes) Compare(other *Hashes) (uint8, uint8, uint8) {
 	return encode.SimhashCompare(hs.BodySimhash, other.BodySimhash), encode.SimhashCompare(hs.HeaderSimhash, other.HeaderSimhash), encode.SimhashCompare(hs.RawSimhash, other.RawSimhash)
-}
-
-func gbk2utf8(content []byte) []byte {
-	bytes, err := simplifiedchinese.GBK.NewDecoder().Bytes(content)
-	if err != nil {
-		return content
-	}
-	return bytes
-}
-
-func gb23122utf8(content []byte) []byte {
-	bytes, err := simplifiedchinese.HZGB2312.NewDecoder().Bytes(content)
-	if err != nil {
-		return content
-	}
-	return bytes
-}
-
-func any2utf8(encoder string, content []byte) []byte {
-	if encoder == "gb2312" {
-		return gb23122utf8(content)
-	} else if encoder == "gbk" {
-		return gbk2utf8(content)
-	}
-	return content
 }

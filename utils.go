@@ -3,6 +3,7 @@ package parsers
 import (
 	"bytes"
 	"fmt"
+	"golang.org/x/text/encoding/simplifiedchinese"
 	"io/ioutil"
 	"net/http"
 	"regexp"
@@ -14,7 +15,7 @@ var (
 	ServerRegexp  = regexp.MustCompile("(?i)Server: ([\x20-\x7e]+)")
 	XPBRegexp     = regexp.MustCompile("(?i)X-Powered-By: ([\x20-\x7e]+)")
 	SessionRegexp = regexp.MustCompile("(?i) (.*SESS.*?ID)")
-	CharsetRegexp = regexp.MustCompile("(?i)Content-Type:.*charset=(.+?)")
+	CharsetRegexp = regexp.MustCompile("(?i)Content-Type:.*charset=(.+)")
 )
 
 func MatchOne(reg *regexp.Regexp, s []byte) (string, bool) {
@@ -158,4 +159,30 @@ func notContains(s, substr string) bool {
 
 func notEqualFlod(s, substr string) bool {
 	return !strings.EqualFold(s, substr)
+}
+
+func Gbk2utf8(content []byte) []byte {
+	bytes, err := simplifiedchinese.GBK.NewDecoder().Bytes(content)
+	if err != nil {
+		return content
+	}
+	return bytes
+}
+
+func Gb23122utf8(content []byte) []byte {
+	bytes, err := simplifiedchinese.HZGB2312.NewDecoder().Bytes(content)
+	if err != nil {
+		return content
+	}
+	return bytes
+}
+
+func Any2utf8(encoder string, content []byte) []byte {
+	encoder = strings.ToLower(encoder)
+	if encoder == "gb2312" {
+		return Gb23122utf8(content)
+	} else if encoder == "gbk" {
+		return Gbk2utf8(content)
+	}
+	return content
 }
