@@ -40,6 +40,7 @@ type SprayResult struct {
 	Source       int        `json:"source"`
 	ReqDepth     int        `json:"depth"`
 	Distance     uint8      `json:"distance"`
+	Unique       uint16     `json:"unique"`
 	*Hashes      `json:"hashes"`
 }
 
@@ -83,6 +84,8 @@ func (bl *SprayResult) Get(key string) string {
 		return "sim:" + strconv.Itoa(int(bl.Distance))
 	case "source":
 		return GetSpraySourceName(bl.Source)
+	case "unique":
+		return strconv.Itoa(int(bl.Unique))
 	case "extract":
 		return bl.Extracteds.String()
 	case "frame", "framework":
