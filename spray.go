@@ -7,10 +7,10 @@ import (
 	"strings"
 )
 
-var sources = []string{"unknown", "check", "random", "index", "redirect", "crawl", "active", "word", "waf", "rule", "bak", "common", "upgrade"}
+var sources = []string{"unknown", "check", "random", "index", "redirect", "crawl", "finger", "word", "waf", "rule", "bak", "common", "upgrade", "append"}
 
 func GetSpraySourceName(s int) string {
-	if s < 13 {
+	if s < len(sources) {
 		return sources[s]
 	} else {
 		return "unknown"
