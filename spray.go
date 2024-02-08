@@ -7,12 +7,57 @@ import (
 	"strings"
 )
 
-var sources = []string{"unknown", "check", "random", "index", "redirect", "crawl", "finger", "word", "waf", "rule", "bak", "common", "upgrade", "append"}
+type Source int
 
-func GetSpraySourceName(s int) string {
-	if s <= len(sources) {
-		return sources[s]
-	} else {
+const (
+	CheckSource Source = iota + 1
+	InitRandomSource
+	InitIndexSource
+	RedirectSource
+	CrawlSource
+	FingerSource
+	WordSource
+	WafSource
+	RuleSource
+	BakSource
+	CommonFileSource
+	UpgradeSource
+	RetrySource
+	AppendSource
+)
+
+// Name return the name of the source
+func (s Source) Name() string {
+	switch s {
+	case CheckSource:
+		return "check"
+	case InitRandomSource:
+		return "random"
+	case InitIndexSource:
+		return "index"
+	case RedirectSource:
+		return "redirect"
+	case CrawlSource:
+		return "crawl"
+	case FingerSource:
+		return "finger"
+	case WordSource:
+		return "word"
+	case WafSource:
+		return "waf"
+	case RuleSource:
+		return "rule"
+	case BakSource:
+		return "bak"
+	case CommonFileSource:
+		return "common"
+	case UpgradeSource:
+		return "upgrade"
+	case RetrySource:
+		return "retry"
+	case AppendSource:
+		return "append"
+	default:
 		return "unknown"
 	}
 }
@@ -37,7 +82,7 @@ type SprayResult struct {
 	Extracteds   Extracteds `json:"extracts"`
 	ErrString    string     `json:"error"`
 	Reason       string     `json:"reason"`
-	Source       int        `json:"source"`
+	Source       Source     `json:"source"`
 	ReqDepth     int        `json:"depth"`
 	Distance     uint8      `json:"distance"`
 	Unique       uint16     `json:"unique"`
@@ -83,7 +128,7 @@ func (bl *SprayResult) Get(key string) string {
 	case "sim", "distance":
 		return "sim:" + strconv.Itoa(int(bl.Distance))
 	case "source":
-		return GetSpraySourceName(bl.Source)
+		return bl.Source.Name()
 	case "unique":
 		return strconv.Itoa(int(bl.Unique))
 	case "extract":
@@ -143,7 +188,7 @@ func (bl *SprayResult) Format(probes []string) string {
 
 func (bl *SprayResult) ColorString() string {
 	var line strings.Builder
-	line.WriteString(logs.GreenLine("[" + GetSpraySourceName(bl.Source) + "] "))
+	line.WriteString(logs.GreenLine("[" + bl.Source.Name() + "] "))
 	if bl.FrontURL != "" {
 		line.WriteString(logs.CyanLine(bl.FrontURL))
 		line.WriteString(" --> ")
@@ -196,7 +241,7 @@ func (bl *SprayResult) ColorString() string {
 
 func (bl *SprayResult) String() string {
 	var line strings.Builder
-	line.WriteString(logs.GreenLine("[" + GetSpraySourceName(bl.Source) + "] "))
+	line.WriteString(logs.GreenLine("[" + bl.Source.Name() + "] "))
 	if bl.FrontURL != "" {
 		line.WriteString(bl.FrontURL)
 		line.WriteString(" --> ")
