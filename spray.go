@@ -10,7 +10,7 @@ import (
 var sources = []string{"unknown", "check", "random", "index", "redirect", "crawl", "finger", "word", "waf", "rule", "bak", "common", "upgrade", "append"}
 
 func GetSpraySourceName(s int) string {
-	if s < len(sources) {
+	if s <= len(sources) {
 		return sources[s]
 	} else {
 		return "unknown"
