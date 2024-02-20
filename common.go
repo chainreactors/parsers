@@ -13,16 +13,18 @@ const (
 	FrameFromNOTFOUND
 	FrameFromGUESS
 	FrameFromRedirect
+	FrameFromFingerprintHub
 )
 
 var NoGuess bool
 var frameFromMap = map[int]string{
-	FrameFromDefault:  "finger",
-	FrameFromACTIVE:   "active",
-	FrameFromICO:      "ico",
-	FrameFromNOTFOUND: "404",
-	FrameFromGUESS:    "guess",
-	FrameFromRedirect: "redirect",
+	FrameFromDefault:        "finger",
+	FrameFromACTIVE:         "active",
+	FrameFromICO:            "ico",
+	FrameFromNOTFOUND:       "404",
+	FrameFromGUESS:          "guess",
+	FrameFromRedirect:       "redirect",
+	FrameFromFingerprintHub: "fingerprinthub",
 }
 
 func GetFrameFrom(s string) int {
@@ -35,6 +37,10 @@ func GetFrameFrom(s string) int {
 		return FrameFromICO
 	case "guess":
 		return FrameFromGUESS
+	case "redirect":
+		return FrameFromRedirect
+	case "fingerprinthub":
+		return FrameFromFingerprintHub
 	default:
 		return FrameFromDefault
 	}
@@ -107,6 +113,16 @@ func (fs Frameworks) Add(other *Framework) {
 	} else {
 		other.Froms = map[int]bool{other.From: true}
 		fs[other.Name] = other
+	}
+}
+
+func (fs Frameworks) Merge(other Frameworks) {
+	for name, f := range other {
+		if frame, ok := fs[name]; ok {
+			frame.Froms[FrameFromFingerprintHub] = true
+		} else {
+			fs[name] = f
+		}
 	}
 }
 
