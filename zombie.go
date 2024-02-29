@@ -1,24 +1,24 @@
 package parsers
 
+// static plugin, load template will be added
 // ZombieMap map zombie service to gogo finger
 var ZombieMap = map[string]string{
-	"mariadb":   "MYSQL",
-	"mysql":     "MYSQL",
-	"rdp":       "RDP",
-	"oracle":    "ORACLE",
-	"sqlserver": "MSSQL",
-	"mssql":     "MSSQL",
-	"smb":       "SMB",
-	"redis":     "REDIS",
-	"vnc":       "VNC",
-	//"elasticsearch": "ELASTICSEARCH",
-	"postgresql": "POSTGRESQL",
-	"mongo":      "MONGO",
-	"ssh":        "SSH",
-	"ftp":        "FTP",
-	"socks5":     "SOCKS5",
-	"rsync":      "RSYNC",
-	"telnet":     "TELNET",
+	"mariadb":    "mysql",
+	"mysql":      "mysql",
+	"rdp":        "rdp",
+	"oracle":     "oracle",
+	"sqlserver":  "mssql",
+	"mssql":      "mssql",
+	"smb":        "smb",
+	"redis":      "redis",
+	"vnc":        "vnc",
+	"postgresql": "postgresql",
+	"mongo":      "mongo",
+	"ssh":        "ssh",
+	"ftp":        "ftp",
+	"socks5":     "socks5",
+	"rsync":      "rsync",
+	"telnet":     "telnet",
 }
 
 type ZombieInput struct {
