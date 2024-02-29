@@ -25,5 +25,6 @@ type ZombieInput struct {
 	IP      string            `json:"ip"`
 	Port    string            `json:"port"`
 	Service string            `json:"service"`
-	Param   map[string]string `json:"param"`
+	Scheme  string            `json:"scheme"`
+	Param   map[string]string `json:"param,omitempty"`
 }

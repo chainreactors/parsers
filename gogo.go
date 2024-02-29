@@ -357,6 +357,7 @@ func (rd *GOGOData) ToZombie() []*ZombieInput {
 		for name, _ := range r.Frameworks {
 			if service, ok := ZombieMap[name]; ok {
 				zms = append(zms, &ZombieInput{
+					Scheme:  r.Protocol,
 					IP:      r.Ip,
 					Port:    r.Port,
 					Service: service,
