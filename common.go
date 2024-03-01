@@ -218,7 +218,7 @@ var SeverityMap = map[int]string{
 type Vuln struct {
 	Name          string                 `json:"name"`
 	Payload       map[string]interface{} `json:"payload,omitempty"`
-	Detail        map[string]interface{} `json:"detail,omitempty"`
+	Detail        map[string][]string    `json:"detail,omitempty"`
 	SeverityLevel int                    `json:"severity"`
 }
 
@@ -227,7 +227,11 @@ func (v *Vuln) GetPayload() string {
 }
 
 func (v *Vuln) GetDetail() string {
-	return iutils.MapToString(v.Detail)
+	var s strings.Builder
+	for k, v := range v.Detail {
+		s.WriteString(fmt.Sprintf(" %s:%s ", k, strings.Join(v, ",")))
+	}
+	return s.String()
 }
 
 func (v *Vuln) String() string {
