@@ -21,6 +21,11 @@ var ZombieMap = map[string]string{
 	"telnet":     "telnet",
 }
 
+// RegisterZombieServiceAlias register alias for zombie service after load templates
+func RegisterZombieServiceAlias() {
+	ZombieMap["tomcat-manager"] = "tomcat"
+}
+
 type ZombieInput struct {
 	IP      string            `json:"ip"`
 	Port    string            `json:"port"`
