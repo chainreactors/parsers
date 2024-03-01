@@ -364,6 +364,18 @@ func (rd *GOGOData) ToZombie() []*ZombieInput {
 				})
 			}
 		}
+		for _, v := range r.Vulns {
+			for _, tag := range v.Tags {
+				if service, ok := ZombieMap[tag]; ok {
+					zms = append(zms, &ZombieInput{
+						Scheme:  r.Protocol,
+						IP:      r.Ip,
+						Port:    r.Port,
+						Service: service,
+					})
+				}
+			}
+		}
 	}
 	return zms
 }

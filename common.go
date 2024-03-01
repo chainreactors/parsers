@@ -217,6 +217,7 @@ var SeverityMap = map[int]string{
 
 type Vuln struct {
 	Name          string                 `json:"name"`
+	Tags          []string               `json:"tags,omitempty"`
 	Payload       map[string]interface{} `json:"payload,omitempty"`
 	Detail        map[string][]string    `json:"detail,omitempty"`
 	SeverityLevel int                    `json:"severity"`

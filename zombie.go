@@ -23,6 +23,7 @@ var ZombieMap = map[string]string{
 
 // RegisterZombieServiceAlias register alias for zombie service after load templates
 func RegisterZombieServiceAlias() {
+	ZombieMap["tomcat"] = "tomcat"
 	ZombieMap["tomcat-manager"] = "tomcat"
 }
 
