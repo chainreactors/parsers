@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/chainreactors/files"
+	"github.com/chainreactors/fingers/common"
 	"github.com/chainreactors/logs"
 	"strings"
 )
@@ -53,8 +54,8 @@ func NewGOGOResult(ip, port string) *GOGOResult {
 		Port:       port,
 		Protocol:   "tcp",
 		Status:     "tcp",
-		Frameworks: make(Frameworks),
-		Vulns:      make(Vulns),
+		Frameworks: make(common.Frameworks),
+		Vulns:      make(common.Vulns),
 	}
 }
 
@@ -64,8 +65,8 @@ type GOGOResult struct {
 	Uri        string              `json:"uri,omitempty"`
 	Os         string              `json:"os,omitempty"`
 	Host       string              `json:"host,omitempty"`
-	Frameworks Frameworks          `json:"frameworks,omitempty"`
-	Vulns      Vulns               `json:"vulns,omitempty"`
+	Frameworks common.Frameworks   `json:"frameworks,omitempty"`
+	Vulns      common.Vulns        `json:"vulns,omitempty"`
 	Extracteds map[string][]string `json:"extracted,omitempty"`
 	Protocol   string              `json:"protocol"`
 	Status     string              `json:"status"`
@@ -120,7 +121,7 @@ func (result *GOGOResult) NoFramework() bool {
 	return false
 }
 
-func (result *GOGOResult) GetFirstFramework() *Framework {
+func (result *GOGOResult) GetFirstFramework() *common.Framework {
 	if !result.NoFramework() {
 		for _, frame := range result.Frameworks {
 			return frame
