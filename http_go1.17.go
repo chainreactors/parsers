@@ -1,7 +1,11 @@
+//go:build go1.17
+// +build go1.17
+
 package parsers
 
 import (
 	"github.com/chainreactors/utils/encode"
+	"golang.org/x/text/encoding/simplifiedchinese"
 	"net/http"
 	"strings"
 )
@@ -119,4 +123,30 @@ var SimhashThreshold uint8 = 8
 
 func (hs *Hashes) Compare(other *Hashes) (uint8, uint8, uint8) {
 	return encode.SimhashCompare(hs.BodySimhash, other.BodySimhash), encode.SimhashCompare(hs.HeaderSimhash, other.HeaderSimhash), encode.SimhashCompare(hs.RawSimhash, other.RawSimhash)
+}
+
+func Gbk2utf8(content []byte) []byte {
+	bytes, err := simplifiedchinese.GBK.NewDecoder().Bytes(content)
+	if err != nil {
+		return content
+	}
+	return bytes
+}
+
+func Gb23122utf8(content []byte) []byte {
+	bytes, err := simplifiedchinese.HZGB2312.NewDecoder().Bytes(content)
+	if err != nil {
+		return content
+	}
+	return bytes
+}
+
+func Any2utf8(encoder string, content []byte) []byte {
+	encoder = strings.ToLower(encoder)
+	if encoder == "gb2312" {
+		return Gb23122utf8(content)
+	} else if encoder == "gbk" {
+		return Gbk2utf8(content)
+	}
+	return content
 }
