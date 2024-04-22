@@ -4,6 +4,8 @@
 package parsers
 
 import (
+	"bufio"
+	"bytes"
 	"github.com/chainreactors/utils/encode"
 	"net/http"
 	"strings"
@@ -12,6 +14,7 @@ import (
 func NewResponse(resp *http.Response) *Response {
 	r := &Response{
 		Content: NewContent(ReadRaw(resp)),
+		Resp:    resp,
 	}
 
 	if title := MatchTitle(r.Raw); title != "" {
@@ -26,41 +29,37 @@ func NewResponse(resp *http.Response) *Response {
 		r.SSLHost = resp.TLS.PeerCertificates[0].DNSNames
 	}
 
-	for resp = resp.Request.Response; resp != nil; {
-		content := NewContent(ReadRaw(resp))
-		if resp.TLS != nil {
-			content.SSLHost = resp.TLS.PeerCertificates[0].DNSNames
+	if resp.Request != nil {
+		for resp = resp.Request.Response; resp != nil; {
+			content := NewContent(ReadRaw(resp))
+			if resp.TLS != nil {
+				content.SSLHost = resp.TLS.PeerCertificates[0].DNSNames
+			}
+			r.History = append(r.History, content)
+			resp = resp.Request.Response
 		}
-		r.History = append(r.History, content)
-		resp = resp.Request.Response
 	}
+
 	return r
 }
 
 func NewResponseWithRaw(raw []byte) *Response {
-	resp := &Response{
-		Content: NewContent(raw),
+	resp, err := http.ReadResponse(bufio.NewReader(bytes.NewReader(raw)), nil)
+	if err != nil {
+		return nil
 	}
 
-	if title := MatchTitle(resp.Raw); title != "" {
-		resp.HasTitle = true
-		resp.Title = title
-	} else {
-		resp.Title = MatchCharacter(resp.Raw)
-	}
-	resp.Server, _ = MatchOne(ServerRegexp, resp.Header)
-	resp.Language = MatchLanguageWithRaw(resp.Header)
-
-	return resp
+	return NewResponse(resp)
 }
 
 type Response struct {
-	Language string `json:"language"`
-	Server   string `json:"server"`
-	Title    string `json:"title"`
-	HasTitle bool   `json:"-"`
+	Language string     `json:"language"`
+	Server   string     `json:"server"`
+	Title    string     `json:"title"`
+	HasTitle bool       `json:"-"` // html title: true , bytes[:13]: false
+	History  []*Content `json:"history"`
+	Resp     *http.Response
 	*Content
-	History []*Content `json:"history"`
 	*Hashes `json:"hashes"`
 }
 

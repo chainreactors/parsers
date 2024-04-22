@@ -30,14 +30,17 @@ func NewResponse(resp *http.Response) *Response {
 		r.SSLHost = resp.TLS.PeerCertificates[0].DNSNames
 	}
 
-	for resp = resp.Request.Response; resp != nil; {
-		content := NewContent(ReadRaw(resp))
-		if resp.TLS != nil {
-			content.SSLHost = resp.TLS.PeerCertificates[0].DNSNames
+	if resp.Request != nil {
+		for resp = resp.Request.Response; resp != nil; {
+			content := NewContent(ReadRaw(resp))
+			if resp.TLS != nil {
+				content.SSLHost = resp.TLS.PeerCertificates[0].DNSNames
+			}
+			r.History = append(r.History, content)
+			resp = resp.Request.Response
 		}
-		r.History = append(r.History, content)
-		resp = resp.Request.Response
 	}
+
 	return r
 }
 
