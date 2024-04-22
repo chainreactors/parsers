@@ -10,11 +10,12 @@ import (
 )
 
 var (
-	TitleRegexp   = regexp.MustCompile("(?Uis)<title>(.*)</title>")
-	ServerRegexp  = regexp.MustCompile("(?i)Server: ([\x20-\x7e]+)")
-	XPBRegexp     = regexp.MustCompile("(?i)X-Powered-By: ([\x20-\x7e]+)")
-	SessionRegexp = regexp.MustCompile("(?i) (.*SESS.*?ID)")
-	CharsetRegexp = regexp.MustCompile("(?i)Content-Type:.*charset=(.+)")
+	TitleRegexp         = regexp.MustCompile("(?Uis)<title>(.*)</title>")
+	ServerRegexp        = regexp.MustCompile("(?i)Server: ([\x20-\x7e]+)")
+	XPBRegexp           = regexp.MustCompile("(?i)X-Powered-By: ([\x20-\x7e]+)")
+	SessionRegexp       = regexp.MustCompile("(?i) (.*SESS.*?ID)")
+	HeaderCharsetRegexp = regexp.MustCompile("(?i)Content-Type:.*charset=(.+)")
+	BodyCharsetRegexp   = regexp.MustCompile("(?i)<meta.*?charset=[\"']?(.*?)[\"' >]")
 )
 
 func MatchOne(reg *regexp.Regexp, s []byte) (string, bool) {
@@ -78,7 +79,12 @@ func ReadHeader(resp *http.Response) []byte {
 }
 
 func MatchCharset(content []byte) string {
-	charset, ok := MatchOne(CharsetRegexp, content)
+	charset, ok := MatchOne(HeaderCharsetRegexp, content)
+	if ok {
+		return charset
+	}
+
+	charset, ok = MatchOne(BodyCharsetRegexp, content)
 	if ok {
 		return charset
 	}
