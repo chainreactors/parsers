@@ -139,6 +139,12 @@ func (result *GOGOResult) Get(key string) string {
 		return result.Status
 	case "frameworks", "framework", "frame":
 		return result.Frameworks.String()
+	case "cpe", "fsb":
+		return strings.Join(result.Frameworks.CPE(), ",")
+	case "uri":
+		return strings.Join(result.Frameworks.URI(), ",")
+	case "wfn":
+		return strings.Join(result.Frameworks.WFN(), ",")
 	case "vulns", "vuln":
 		return result.Vulns.String()
 	case "host", "cert":

@@ -140,6 +140,12 @@ func (bl *SprayResult) Get(key string) string {
 			s.WriteString(" [" + f.String() + "]")
 		}
 		return s.String()
+	case "cpe", "fsb":
+		return strings.Join(bl.Frameworks.CPE(), ",")
+	case "uri":
+		return strings.Join(bl.Frameworks.URI(), ",")
+	case "wfn":
+		return strings.Join(bl.Frameworks.WFN(), ",")
 	case "full":
 		return bl.String()
 	default:

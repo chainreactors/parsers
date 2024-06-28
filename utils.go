@@ -107,24 +107,24 @@ func MatchCharacter(content []byte) string {
 	}
 }
 
-func MatchLanguage(resp *http.Response) string {
-	var powered string
-	powered = resp.Header.Get("X-Powered-By")
-	if powered != "" {
-		return powered
-	}
-
-	cookies := getCookies(resp)
-	if cookies["JSESSIONID"] != "" {
-		return "JAVA"
-	} else if cookies["ASP.NET_SessionId"] != "" {
-		return "ASP"
-	} else if cookies["PHPSESSID"] != "" {
-		return "PHP"
-	} else {
-		return ""
-	}
-}
+//func MatchLanguage(resp *http.Response) string {
+//	var powered string
+//	powered = resp.Header.Get("X-Powered-By")
+//	if powered != "" {
+//		return powered
+//	}
+//
+//	cookies := getCookies(resp)
+//	if cookies["JSESSIONID"] != "" {
+//		return "JAVA"
+//	} else if cookies["ASP.NET_SessionId"] != "" {
+//		return "ASP"
+//	} else if cookies["PHPSESSID"] != "" {
+//		return "PHP"
+//	} else {
+//		return ""
+//	}
+//}
 
 //func MatchLanguageWithRaw(content []byte) string {
 //	powered, ok := MatchOne(XPBRegexp, content)
