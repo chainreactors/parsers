@@ -25,7 +25,6 @@ func NewResponse(resp *http.Response) *Response {
 		r.Title = MatchCharacter(r.Raw)
 	}
 	r.Server = resp.Header.Get("Server")
-	r.Language = MatchLanguageWithRaw(r.Header)
 	if resp.TLS != nil {
 		r.SSLHost = resp.TLS.PeerCertificates[0].DNSNames
 	}
@@ -54,7 +53,6 @@ func NewResponseWithRaw(raw []byte) *Response {
 }
 
 type Response struct {
-	Language string     `json:"language"`
 	Server   string     `json:"server"`
 	Title    string     `json:"title"`
 	HasTitle bool       `json:"-"` // html title: true , bytes[:13]: false

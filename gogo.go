@@ -63,14 +63,12 @@ type GOGOResult struct {
 	Ip         string              `json:"ip"`
 	Port       string              `json:"port"`
 	Uri        string              `json:"uri,omitempty"`
-	Os         string              `json:"os,omitempty"`
 	Host       string              `json:"host,omitempty"`
 	Frameworks common.Frameworks   `json:"frameworks,omitempty"`
 	Vulns      common.Vulns        `json:"vulns,omitempty"`
 	Extracteds map[string][]string `json:"extracted,omitempty"`
 	Protocol   string              `json:"protocol"`
 	Status     string              `json:"status"`
-	Language   string              `json:"language"`
 	Title      string              `json:"title"`
 	Midware    string              `json:"midware"`
 }
@@ -152,12 +150,8 @@ func (result *GOGOResult) Get(key string) string {
 		return result.GetBaseURL()
 	case "midware":
 		return result.Midware
-	case "language":
-		return result.Language
 	case "protocol", "scheme":
 		return result.Protocol
-	case "os":
-		return result.Os
 	case "extract", "extracts":
 		var s strings.Builder
 		s.WriteString("[ ")
@@ -172,12 +166,12 @@ func (result *GOGOResult) Get(key string) string {
 }
 
 func (result *GOGOResult) ColorOutput() string {
-	s := fmt.Sprintf("[+] %s\t%s\t%s\t%s\t%s [%s] %s %s\n", result.GetURL(), result.Midware, result.Language, logs.Blue(result.Frameworks.String()), result.Host, logs.Yellow(result.Status), logs.Blue(result.Title), logs.Red(result.Vulns.String()))
+	s := fmt.Sprintf("[+] %s\t%s\t%s [%s] %s %s\n", result.GetURL(), logs.Blue(result.Frameworks.String()), result.Host, logs.Yellow(result.Status), logs.Blue(result.Title), logs.Red(result.Vulns.String()))
 	return s
 }
 
 func (result *GOGOResult) FullOutput() string {
-	s := fmt.Sprintf("[+] %s\t%s\t%s\t%s\t%s [%s] %s %s %s\n", result.GetURL(), result.Midware, result.Language, result.Frameworks.String(), result.Host, result.Status, result.Title, result.Vulns.String(), result.GetExtractStat())
+	s := fmt.Sprintf("[+] %s\t%s\t%s [%s] %s %s %s\n", result.GetURL(), result.Frameworks.String(), result.Host, result.Status, result.Title, result.Vulns.String(), result.GetExtractStat())
 	return s
 }
 
@@ -187,7 +181,7 @@ func (result *GOGOResult) JsonOutput() string {
 }
 
 func (result *GOGOResult) CsvOutput() string {
-	return fmt.Sprintf("%s,%s,%s,%s,%s,%s,%s,%s,%s,%s\n", result.Ip, result.Port, result.GetURL(), result.Status, slashComma(result.Title), result.Host, result.Language, slashComma(result.Midware), slashComma(result.Frameworks.String()), slashComma(result.Vulns.String()))
+	return fmt.Sprintf("%s,%s,%s,%s,%s,%s,%s,%s\n", result.Ip, result.Port, result.GetURL(), result.Status, slashComma(result.Title), result.Host, slashComma(result.Frameworks.String()), slashComma(result.Vulns.String()))
 }
 
 func (result *GOGOResult) ValuesOutput(outType string) string {
