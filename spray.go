@@ -147,6 +147,18 @@ func (bl *SprayResult) Get(key string) string {
 	}
 }
 
+func (bl *SprayResult) FramesColorString() string {
+	var s strings.Builder
+	for _, f := range bl.Frameworks {
+		if f.IsFocus {
+			s.WriteString(logs.RedBold(" [" + strings.Replace(f.String(), "focus:", "", -1) + "]"))
+		} else {
+			s.WriteString(logs.Cyan(" [" + f.String() + "]"))
+		}
+	}
+	return s.String()
+}
+
 func (bl *SprayResult) Additional(key string) string {
 	if key == "frame" || key == "extract" {
 		return bl.Get(key)
@@ -189,48 +201,47 @@ func (bl *SprayResult) Format(probes []string) string {
 
 func (bl *SprayResult) ColorString() string {
 	var line strings.Builder
-	line.WriteString(logs.GreenLine("[" + bl.Source.Name() + "] "))
-	if bl.FrontURL != "" {
-		line.WriteString(logs.CyanLine(bl.FrontURL))
-		line.WriteString(" --> ")
-	}
-	line.WriteString(logs.GreenLine(bl.UrlString))
-	if bl.Host != "" {
-		line.WriteString(" (" + bl.Host + ")")
-	}
+	line.WriteString(logs.GreenLine("[" + bl.Source.Name() + "]\t"))
 
-	if bl.Reason != "" {
-		line.WriteString(" [reason: ")
-		line.WriteString(logs.YellowBold(bl.Reason))
-		line.WriteString("]")
-	}
-	if bl.ErrString != "" {
-		line.WriteString(" [err: ")
-		line.WriteString(logs.RedBold(bl.ErrString))
-		line.WriteString("]")
-		return line.String()
-	}
-
-	line.WriteString(" - ")
 	line.WriteString(logs.GreenBold(strconv.Itoa(bl.Status)))
-	line.WriteString(" - ")
-	line.WriteString(logs.YellowBold(strconv.Itoa(bl.BodyLength)))
+	line.WriteString("\t")
+	line.WriteString(logs.Yellow(strconv.Itoa(bl.BodyLength)))
 	if bl.ExceedLength {
-		line.WriteString(logs.Red("(exceed)"))
+		line.WriteString(logs.Yellow("(exceed)"))
 	}
-	line.WriteString(" - ")
-	line.WriteString(logs.YellowBold(strconv.Itoa(int(bl.Spended)) + "ms"))
+	line.WriteString("\t")
+	line.WriteString(logs.Yellow(strconv.Itoa(int(bl.Spended)) + "ms"))
+	line.WriteString("\t")
+	if bl.FrontURL != "" {
+		line.WriteString(" --> ")
+		line.WriteString(logs.Green(bl.FrontURL))
+	}
+	line.WriteString(logs.GreenBold(bl.UrlString))
+	if bl.Host != "" {
+		line.WriteString(logs.Green(" (" + bl.Host + ")"))
+	}
+	if bl.RedirectURL != "" {
+		line.WriteString(" --> ")
+		line.WriteString(logs.Green(bl.RedirectURL))
+		line.WriteString(" ")
+	}
+
 	line.WriteString(logs.GreenLine(bl.Additional("title")))
+
 	if bl.Distance != 0 {
 		line.WriteString(logs.GreenLine(bl.Additional("sim")))
 	}
-	line.WriteString(logs.Cyan(bl.Additional("frame")))
-	line.WriteString(logs.Cyan(bl.Additional("extract")))
-	if bl.RedirectURL != "" {
-		line.WriteString(" --> ")
-		line.WriteString(logs.CyanLine(bl.RedirectURL))
-		line.WriteString(" ")
+
+	if bl.Reason != "" {
+		line.WriteString(logs.Yellow(" [reason: " + bl.Reason + "]"))
 	}
+	if bl.ErrString != "" {
+		line.WriteString(logs.RedBold(" [err: " + bl.ErrString + "]"))
+		return line.String()
+	}
+
+	line.WriteString(bl.FramesColorString())
+	line.WriteString(logs.Cyan(bl.Additional("extract")))
 	if len(bl.Extracteds) > 0 {
 		for _, e := range bl.Extracteds {
 			line.WriteString("\n  " + e.Name + " (" + strconv.Itoa(len(e.ExtractResult)) + ") items : \n\t")
@@ -242,48 +253,47 @@ func (bl *SprayResult) ColorString() string {
 
 func (bl *SprayResult) String() string {
 	var line strings.Builder
-	line.WriteString(logs.GreenLine("[" + bl.Source.Name() + "] "))
+	line.WriteString("[" + bl.Source.Name() + "]\t")
+
+	line.WriteString(strconv.Itoa(bl.Status))
+	line.WriteString("\t")
+	line.WriteString(strconv.Itoa(bl.BodyLength))
+	if bl.ExceedLength {
+		line.WriteString("(exceed)")
+	}
+	line.WriteString("\t")
+	line.WriteString(strconv.Itoa(int(bl.Spended)) + "ms")
+	line.WriteString("\t")
 	if bl.FrontURL != "" {
-		line.WriteString(bl.FrontURL)
 		line.WriteString(" --> ")
+		line.WriteString(bl.FrontURL)
 	}
 	line.WriteString(bl.UrlString)
 	if bl.Host != "" {
 		line.WriteString(" (" + bl.Host + ")")
 	}
-
-	if bl.Reason != "" {
-		line.WriteString(" [reason: ")
-		line.WriteString(bl.Reason)
-		line.WriteString("]")
-	}
-	if bl.ErrString != "" {
-		line.WriteString(" [err: ")
-		line.WriteString(bl.ErrString)
-		line.WriteString("]")
-		return line.String()
-	}
-
-	line.WriteString(" - ")
-	line.WriteString(strconv.Itoa(bl.Status))
-	line.WriteString(" - ")
-	line.WriteString(strconv.Itoa(bl.BodyLength))
-	if bl.ExceedLength {
-		line.WriteString("(exceed)")
-	}
-	line.WriteString(" - ")
-	line.WriteString(strconv.Itoa(int(bl.Spended)) + "ms")
-	line.WriteString(bl.Additional("title"))
-	if bl.Distance != 0 {
-		line.WriteString(logs.GreenLine(bl.Additional("sim")))
-	}
-	line.WriteString(bl.Additional("frame"))
-	line.WriteString(bl.Additional("extract"))
 	if bl.RedirectURL != "" {
 		line.WriteString(" --> ")
 		line.WriteString(bl.RedirectURL)
 		line.WriteString(" ")
 	}
+
+	line.WriteString(bl.Additional("title"))
+
+	if bl.Distance != 0 {
+		line.WriteString(logs.GreenLine(bl.Additional("sim")))
+	}
+
+	if bl.Reason != "" {
+		line.WriteString(" [reason: " + bl.Reason + "]")
+	}
+	if bl.ErrString != "" {
+		line.WriteString(" [err: " + bl.ErrString + "]")
+		return line.String()
+	}
+
+	line.WriteString(bl.Additional("frame"))
+	line.WriteString(bl.Additional("extract"))
 	if len(bl.Extracteds) > 0 {
 		for _, e := range bl.Extracteds {
 			line.WriteString("\n  " + e.Name + " (" + strconv.Itoa(len(e.ExtractResult)) + ") items : \n\t")
