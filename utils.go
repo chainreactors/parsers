@@ -10,10 +10,10 @@ import (
 )
 
 var (
-	TitleRegexp         = regexp.MustCompile("(?Uis)<title>(.*)</title>")
-	ServerRegexp        = regexp.MustCompile("(?i)Server: ([\x20-\x7e]+)")
-	XPBRegexp           = regexp.MustCompile("(?i)X-Powered-By: ([\x20-\x7e]+)")
-	SessionRegexp       = regexp.MustCompile("(?i) (.*SESS.*?ID)")
+	TitleRegexp  = regexp.MustCompile("(?Uis)<title>(.*)</title>")
+	ServerRegexp = regexp.MustCompile("(?i)Server: ([\x20-\x7e]+)")
+	//XPBRegexp           = regexp.MustCompile("(?i)X-Powered-By: ([\x20-\x7e]+)")
+	//SessionRegexp       = regexp.MustCompile("(?i) (.*SESS.*?ID)")
 	HeaderCharsetRegexp = regexp.MustCompile("(?i)Content-Type:.*charset=(.+)")
 	BodyCharsetRegexp   = regexp.MustCompile("(?i)<meta.*?charset=[\"']?(.*?)[\"' >]")
 )
@@ -126,25 +126,25 @@ func MatchLanguage(resp *http.Response) string {
 	}
 }
 
-func MatchLanguageWithRaw(content []byte) string {
-	powered, ok := MatchOne(XPBRegexp, content)
-	if ok {
-		return powered
-	}
-
-	sessionid, ok := MatchOne(SessionRegexp, content)
-	if ok {
-		switch sessionid {
-		case "JSESSIONID":
-			return "JAVA"
-		case "ASP.NET_SessionId":
-			return "ASP.NET"
-		case "PHPSESSID":
-			return "PHP"
-		}
-	}
-	return ""
-}
+//func MatchLanguageWithRaw(content []byte) string {
+//	powered, ok := MatchOne(XPBRegexp, content)
+//	if ok {
+//		return powered
+//	}
+//
+//	sessionid, ok := MatchOne(SessionRegexp, content)
+//	if ok {
+//		switch sessionid {
+//		case "JSESSIONID":
+//			return "JAVA"
+//		case "ASP.NET_SessionId":
+//			return "ASP.NET"
+//		case "PHPSESSID":
+//			return "PHP"
+//		}
+//	}
+//	return ""
+//}
 
 func getCookies(resp *http.Response) map[string]string {
 	cookies := make(map[string]string)
@@ -152,10 +152,6 @@ func getCookies(resp *http.Response) map[string]string {
 		cookies[cookie.Name] = cookie.Value
 	}
 	return cookies
-}
-
-func slashComma(s string) string {
-	return strings.Replace(s, ",", "\\,", -1)
 }
 
 func notContains(s, substr string) bool {

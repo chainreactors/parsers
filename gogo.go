@@ -2,6 +2,7 @@ package parsers
 
 import (
 	"bytes"
+	"encoding/csv"
 	"encoding/json"
 	"fmt"
 	"github.com/chainreactors/files"
@@ -165,13 +166,27 @@ func (result *GOGOResult) Get(key string) string {
 	}
 }
 
+func (result *GOGOResult) FramesColorString() string {
+	var ss []string
+	for _, f := range result.Frameworks {
+		if f.IsFocus {
+			ss = append(ss, logs.RedBold(strings.Replace(f.String(), "focus:", "", -1)))
+			//s.WriteString(logs.RedBold(" [" + strings.Replace(f.String(), "focus:", "", -1) + "]"))
+		} else {
+			ss = append(ss, logs.Cyan(f.String()))
+			//s.WriteString(logs.Cyan(" [" + f.String() + "]"))
+		}
+	}
+	return strings.Join(ss, "||")
+}
+
 func (result *GOGOResult) ColorOutput() string {
-	s := fmt.Sprintf("[+] %s\t%s\t%s [%s] %s %s\n", result.GetURL(), logs.Blue(result.Frameworks.String()), result.Host, logs.Yellow(result.Status), logs.Blue(result.Title), logs.Red(result.Vulns.String()))
+	s := fmt.Sprintf("[+] %s\t%s\t%s\t%s [%s] %s %s\n", result.GetURL(), result.Midware, result.FramesColorString(), result.Host, logs.Yellow(result.Status), logs.GreenLine(result.Title), logs.Red(result.Vulns.String()))
 	return s
 }
 
 func (result *GOGOResult) FullOutput() string {
-	s := fmt.Sprintf("[+] %s\t%s\t%s [%s] %s %s %s\n", result.GetURL(), result.Frameworks.String(), result.Host, result.Status, result.Title, result.Vulns.String(), result.GetExtractStat())
+	s := fmt.Sprintf("[+] %s\t%s\t%s\t%s [%s] %s %s %s\n", result.GetURL(), result.Midware, result.Frameworks.String(), result.Host, result.Status, result.Title, result.Vulns.String(), result.GetExtractStat())
 	return s
 }
 
@@ -181,7 +196,22 @@ func (result *GOGOResult) JsonOutput() string {
 }
 
 func (result *GOGOResult) CsvOutput() string {
-	return fmt.Sprintf("%s,%s,%s,%s,%s,%s,%s,%s\n", result.Ip, result.Port, result.GetURL(), result.Status, slashComma(result.Title), result.Host, slashComma(result.Frameworks.String()), slashComma(result.Vulns.String()))
+	var sb strings.Builder
+	w := csv.NewWriter(&sb)
+	record := []string{
+		result.Ip,
+		result.Port,
+		result.GetURL(),
+		result.Status,
+		result.Title,
+		result.Host,
+		result.Midware,
+		result.Frameworks.String(),
+		result.Vulns.String(),
+	}
+	w.Write(record)
+	w.Flush()
+	return sb.String()
 }
 
 func (result *GOGOResult) ValuesOutput(outType string) string {
