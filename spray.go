@@ -227,9 +227,8 @@ func (bl *SprayResult) ColorString() string {
 		line.WriteString(logs.Green(" (" + bl.Host + ")"))
 	}
 	if bl.RedirectURL != "" {
+		line.WriteString(" " + logs.Green(bl.RedirectURL))
 		line.WriteString(" --> ")
-		line.WriteString(logs.Green(bl.RedirectURL))
-		line.WriteString(" ")
 	}
 
 	line.WriteString(logs.GreenLine(bl.Additional("title")))
@@ -271,8 +270,8 @@ func (bl *SprayResult) String() string {
 	line.WriteString(strconv.Itoa(int(bl.Spended)) + "ms")
 	line.WriteString("\t")
 	if bl.FrontURL != "" {
+		line.WriteString(" " + bl.FrontURL)
 		line.WriteString(" --> ")
-		line.WriteString(bl.FrontURL)
 	}
 	line.WriteString(bl.UrlString)
 	if bl.Host != "" {
