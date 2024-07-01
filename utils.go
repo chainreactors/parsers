@@ -3,6 +3,7 @@ package parsers
 import (
 	"bytes"
 	"fmt"
+	"io"
 	"io/ioutil"
 	"net/http"
 	"regexp"
@@ -41,22 +42,24 @@ func SplitHttpRaw(content []byte) (body, header []byte, ok bool) {
 }
 
 func ReadRaw(resp *http.Response) []byte {
-	var raw string
+	var raw bytes.Buffer
 
-	raw += fmt.Sprintf("%s %s\r\n", resp.Proto, resp.Status)
+	raw.WriteString(resp.Proto + " " + resp.Status + "\r\n")
 	for k, v := range resp.Header {
-		for _, i := range v {
-			raw += fmt.Sprintf("%s: %s\r\n", k, i)
+		if len(v) > 0 {
+			raw.WriteString(k + ": " + v[0] + "\r\n")
 		}
 	}
-	raw += "\r\n"
+	raw.WriteString("\r\n")
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
-		return []byte(raw)
+		if err != io.EOF {
+			return raw.Bytes()
+		}
 	}
-	raw += string(body)
+	raw.Write(body)
 	_ = resp.Body.Close()
-	return []byte(raw)
+	return raw.Bytes()
 }
 
 func ReadBody(resp *http.Response) []byte {
