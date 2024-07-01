@@ -3,7 +3,6 @@ package parsers
 import (
 	"bytes"
 	"fmt"
-	"io"
 	"io/ioutil"
 	"net/http"
 	"regexp"
@@ -52,10 +51,8 @@ func ReadRaw(resp *http.Response) []byte {
 	}
 	raw.WriteString("\r\n")
 	body, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		if err != io.EOF {
-			return raw.Bytes()
-		}
+	if len(body) == 0 && err != nil {
+		return raw.Bytes()
 	}
 	raw.Write(body)
 	_ = resp.Body.Close()
