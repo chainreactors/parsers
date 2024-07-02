@@ -63,15 +63,15 @@ func NewGOGOResult(ip, port string) *GOGOResult {
 type GOGOResult struct {
 	Ip         string              `json:"ip"`
 	Port       string              `json:"port"`
+	Protocol   string              `json:"protocol"`
+	Status     string              `json:"status"`
 	Uri        string              `json:"uri,omitempty"`
 	Host       string              `json:"host,omitempty"`
 	Frameworks common.Frameworks   `json:"frameworks,omitempty"`
 	Vulns      common.Vulns        `json:"vulns,omitempty"`
 	Extracteds map[string][]string `json:"extracted,omitempty"`
-	Protocol   string              `json:"protocol"`
-	Status     string              `json:"status"`
-	Title      string              `json:"title"`
-	Midware    string              `json:"midware"`
+	Title      string              `json:"title,omitempty"`
+	Midware    string              `json:"midware,omitempty"`
 }
 
 func (result *GOGOResult) IsHttp() bool {
