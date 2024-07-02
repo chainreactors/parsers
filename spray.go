@@ -219,8 +219,8 @@ func (bl *SprayResult) ColorString() string {
 	line.WriteString(logs.Yellow(strconv.Itoa(int(bl.Spended)) + "ms"))
 	line.WriteString("\t")
 	if bl.FrontURL != "" {
-		line.WriteString(" --> ")
 		line.WriteString(logs.Green(bl.FrontURL))
+		line.WriteString(" --> ")
 	}
 	line.WriteString(logs.GreenBold(bl.UrlString))
 	if bl.Host != "" {

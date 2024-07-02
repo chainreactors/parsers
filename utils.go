@@ -2,7 +2,7 @@ package parsers
 
 import (
 	"bytes"
-	"fmt"
+	"io"
 	"io/ioutil"
 	"net/http"
 	"regexp"
@@ -42,40 +42,48 @@ func SplitHttpRaw(content []byte) (body, header []byte, ok bool) {
 
 func ReadRaw(resp *http.Response) []byte {
 	var raw bytes.Buffer
-
 	raw.WriteString(resp.Proto + " " + resp.Status + "\r\n")
-	for k, v := range resp.Header {
-		if len(v) > 0 {
-			raw.WriteString(k + ": " + v[0] + "\r\n")
-		}
-	}
+	raw.Write(ReadHeader(resp))
 	raw.WriteString("\r\n")
-	body, err := ioutil.ReadAll(resp.Body)
-	if len(body) == 0 && err != nil {
-		return raw.Bytes()
-	}
-	raw.Write(body)
-	_ = resp.Body.Close()
+	raw.Write(ReadBody(resp))
 	return raw.Bytes()
+}
+
+func ReadRawWithSize(resp *http.Response, size int64) []byte {
+	var raw bytes.Buffer
+	raw.WriteString(resp.Proto + " " + resp.Status + "\r\n")
+	raw.Write(ReadHeader(resp))
+	raw.WriteString("\r\n")
+	raw.Write(ReadBodyWithSize(resp, size))
+	return raw.Bytes()
+}
+
+func ReadBodyWithSize(resp *http.Response, size int64) []byte {
+	//io.LimitReader(resp.Body, size)
+	body, err := ioutil.ReadAll(io.LimitReader(resp.Body, size))
+	if err != nil {
+		return body
+	}
+	return body
 }
 
 func ReadBody(resp *http.Response) []byte {
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
-		return []byte{}
+		return body
 	}
 	_ = resp.Body.Close()
 	return body
 }
 
 func ReadHeader(resp *http.Response) []byte {
-	var header string
+	var header bytes.Buffer
 	for k, v := range resp.Header {
-		for _, i := range v {
-			header += fmt.Sprintf("%s: %s\r\n", k, i)
+		if len(v) > 0 {
+			header.WriteString(k + ": " + v[0] + "\r\n")
 		}
 	}
-	return []byte(header)
+	return header.Bytes()
 }
 
 func MatchCharset(content []byte) string {
