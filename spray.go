@@ -207,15 +207,15 @@ func (bl *SprayResult) Format(probes []string) string {
 
 func (bl *SprayResult) ColorString() string {
 	var line strings.Builder
-	line.WriteString(logs.GreenLine(padding("["+bl.Source.Name()+"]", 10) + "\t"))
-	line.WriteString(logs.GreenBold(strconv.Itoa(bl.Status)))
+	line.WriteString(logs.Green(padding("["+bl.Source.Name()+"]", 10) + "\t"))
+	line.WriteString(logs.YellowBold(strconv.Itoa(bl.Status)))
 	line.WriteString("\t")
-	line.WriteString(logs.Yellow(strconv.Itoa(bl.BodyLength)))
+	line.WriteString(logs.YellowBold(strconv.Itoa(bl.BodyLength)))
 	if bl.ExceedLength {
-		line.WriteString(logs.Yellow("(exceed)"))
+		line.WriteString(logs.Red("(exceed)"))
 	}
 	line.WriteString("\t")
-	line.WriteString(logs.Yellow(strconv.Itoa(int(bl.Spended)) + "ms"))
+	line.WriteString(logs.YellowBold(strconv.Itoa(int(bl.Spended)) + "ms"))
 	line.WriteString("\t")
 	if bl.FrontURL != "" {
 		line.WriteString(logs.Green(bl.FrontURL))
