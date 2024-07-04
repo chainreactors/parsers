@@ -207,8 +207,7 @@ func (bl *SprayResult) Format(probes []string) string {
 
 func (bl *SprayResult) ColorString() string {
 	var line strings.Builder
-	line.WriteString(logs.GreenLine("[" + bl.Source.Name() + "]\t"))
-
+	line.WriteString(logs.GreenLine(padding("["+bl.Source.Name()+"]", 10) + "\t"))
 	line.WriteString(logs.GreenBold(strconv.Itoa(bl.Status)))
 	line.WriteString("\t")
 	line.WriteString(logs.Yellow(strconv.Itoa(bl.BodyLength)))
@@ -258,7 +257,7 @@ func (bl *SprayResult) ColorString() string {
 
 func (bl *SprayResult) String() string {
 	var line strings.Builder
-	line.WriteString("[" + bl.Source.Name() + "]\t")
+	line.WriteString(padding("["+bl.Source.Name()+"]", 10) + "\t")
 
 	line.WriteString(strconv.Itoa(bl.Status))
 	line.WriteString("\t")
@@ -314,4 +313,11 @@ func (bl *SprayResult) Jsonify() string {
 		return ""
 	}
 	return string(bs)
+}
+
+func padding(s string, size int) string {
+	if len(s) >= size {
+		return s
+	}
+	return s + strings.Repeat(" ", size-len(s))
 }
