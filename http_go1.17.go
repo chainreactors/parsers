@@ -7,6 +7,7 @@ import (
 	"bufio"
 	"bytes"
 	"github.com/chainreactors/utils/encode"
+	"github.com/chainreactors/utils/httputils"
 	"golang.org/x/text/encoding/simplifiedchinese"
 	"net/http"
 	"strings"
@@ -14,7 +15,7 @@ import (
 
 func NewResponse(resp *http.Response) *Response {
 	r := &Response{
-		Content: NewContent(ReadRaw(resp)),
+		Content: NewContent(httputils.ReadRaw(resp)),
 		Resp:    resp,
 	}
 
@@ -31,7 +32,7 @@ func NewResponse(resp *http.Response) *Response {
 
 	if resp.Request != nil {
 		for resp = resp.Request.Response; resp != nil; {
-			content := NewContent(ReadRaw(resp))
+			content := NewContent(httputils.ReadRaw(resp))
 			if resp.TLS != nil {
 				content.SSLHost = resp.TLS.PeerCertificates[0].DNSNames
 			}
@@ -67,7 +68,7 @@ func NewContent(raw []byte) *Content {
 	if charset != "" {
 		raw = Any2utf8(charset, raw)
 	}
-	body, header, _ := SplitHttpRaw(raw)
+	body, header, _ := httputils.SplitHttpRaw(raw)
 	return &Content{
 		Body:   body,
 		Header: header,
@@ -94,7 +95,7 @@ func (r *Response) Hash() {
 }
 
 func NewHashes(content []byte) *Hashes {
-	body, header, _ := SplitHttpRaw(content)
+	body, header, _ := httputils.SplitHttpRaw(content)
 	return &Hashes{
 		BodyMd5:       encode.Md5Hash(body),
 		HeaderMd5:     encode.Md5Hash(header),
