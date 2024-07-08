@@ -226,8 +226,10 @@ func (bl *SprayResult) ColorString() string {
 		line.WriteString(logs.Green(" (" + bl.Host + ")"))
 	}
 	if bl.RedirectURL != "" {
-		line.WriteString(" " + logs.Green(bl.RedirectURL))
-		line.WriteString(" --> ")
+		if bl.RedirectURL != "" {
+			line.WriteString(" --> ")
+			line.WriteString(logs.Green(bl.RedirectURL) + " ")
+		}
 	}
 
 	line.WriteString(logs.GreenLine(bl.Additional("title")))
@@ -278,8 +280,7 @@ func (bl *SprayResult) String() string {
 	}
 	if bl.RedirectURL != "" {
 		line.WriteString(" --> ")
-		line.WriteString(bl.RedirectURL)
-		line.WriteString(" ")
+		line.WriteString(bl.RedirectURL + " ")
 	}
 
 	line.WriteString(bl.Additional("title"))
