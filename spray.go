@@ -198,7 +198,7 @@ func (bl *SprayResult) Format(probes []string) string {
 	}
 
 	for _, p := range probes {
-		line.WriteString(" ")
+		line.WriteString("\t")
 		line.WriteString(bl.Additional(p))
 	}
 
