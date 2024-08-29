@@ -1,6 +1,7 @@
 package parsers
 
 import (
+	"encoding/csv"
 	"encoding/json"
 	"github.com/chainreactors/fingers/common"
 	"github.com/chainreactors/logs"
@@ -308,13 +309,71 @@ func (bl *SprayResult) String() string {
 	return line.String()
 }
 
-func (bl *SprayResult) Jsonify() string {
+func (bl *SprayResult) ToJson() string {
 	bs, err := json.Marshal(bl)
 	if err != nil {
 		return ""
 	}
 	return string(bs)
 }
+
+func (sr *SprayResult) ToCSV() string {
+	// Create a CSV writer that writes to a string builder
+	var sb strings.Builder
+	writer := csv.NewWriter(&sb)
+
+	// Define the header (column names)
+	header := []string{
+		"Number", "IsValid", "IsFuzzy", "UrlString", "Path", "Host",
+		"BodyLength", "ExceedLength", "HeaderLength", "RedirectURL",
+		"FrontURL", "Status", "Spended", "ContentType", "Title",
+		"Frameworks", "Extracteds", "ErrString", "Reason", "Source",
+		"ReqDepth", "Distance", "Unique", "BodySimhash", "BodyMd5",
+		"BodyMmh3",
+	}
+
+	// Write the header to the CSV writer
+	writer.Write(header)
+
+	// Convert each field to a string slice
+	record := []string{
+		strconv.Itoa(sr.Number),
+		strconv.FormatBool(sr.IsValid),
+		strconv.FormatBool(sr.IsFuzzy),
+		sr.UrlString,
+		sr.Path,
+		sr.Host,
+		strconv.Itoa(sr.BodyLength),
+		strconv.FormatBool(sr.ExceedLength),
+		strconv.Itoa(sr.HeaderLength),
+		sr.RedirectURL,
+		sr.FrontURL,
+		strconv.Itoa(sr.Status),
+		strconv.FormatInt(sr.Spended, 10),
+		sr.ContentType,
+		sr.Title,
+		sr.Frameworks.String(),
+		sr.Extracteds.String(),
+		sr.ErrString,
+		sr.Reason,
+		sr.Source.Name(),
+		strconv.Itoa(sr.ReqDepth),
+		strconv.Itoa(int(sr.Distance)),
+		strconv.Itoa(int(sr.Unique)),
+		sr.Hashes.BodySimhash,
+		sr.Hashes.BodyMd5,
+		sr.Hashes.BodyMmh3,
+	}
+
+	// Write the record to the CSV writer
+	writer.Write(record)
+	writer.Flush()
+
+	// Return the resulting CSV string
+	return sb.String()
+}
+
+// Write the record to the CSV write
 
 func padding(s string, size int) string {
 	if len(s) >= size {
