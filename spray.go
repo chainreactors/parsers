@@ -26,6 +26,7 @@ const (
 	UpgradeSource
 	RetrySource
 	AppendSource
+	AppendRuleSource
 )
 
 // Name return the name of the source
@@ -59,6 +60,8 @@ func (s SpraySource) Name() string {
 		return "retry"
 	case AppendSource:
 		return "append"
+	case AppendRuleSource:
+		return "arule"
 	default:
 		return "unknown"
 	}
