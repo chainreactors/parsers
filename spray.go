@@ -69,6 +69,7 @@ func (s SpraySource) Name() string {
 
 type SprayResult struct {
 	Number       int               `json:"number"`
+	Parent       int               `json:"parent"`
 	IsValid      bool              `json:"valid"`
 	IsFuzzy      bool              `json:"fuzzy"`
 	UrlString    string            `json:"url"`
@@ -88,6 +89,7 @@ type SprayResult struct {
 	ErrString    string            `json:"error"`
 	Reason       string            `json:"reason"`
 	Source       SpraySource       `json:"source"`
+	From         SpraySource       `yaml:"from"`
 	ReqDepth     int               `json:"depth"`
 	Distance     uint8             `json:"distance"`
 	Unique       uint16            `json:"unique"`
@@ -134,6 +136,8 @@ func (bl *SprayResult) Get(key string) string {
 		return "sim:" + strconv.Itoa(int(bl.Distance))
 	case "source":
 		return bl.Source.Name()
+	case "from":
+		return bl.From.Name()
 	case "unique":
 		return strconv.Itoa(int(bl.Unique))
 	case "extract":
