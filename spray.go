@@ -165,9 +165,9 @@ func (bl *SprayResult) FramesColorString() string {
 	var s strings.Builder
 	for _, f := range bl.Frameworks {
 		if f.IsFocus {
-			s.WriteString(logs.RedBold(" [" + strings.Replace(f.String(), "focus:", "", -1) + "]"))
+			s.WriteString(" " + logs.RedBold("["+strings.Replace(f.String(), "focus:", "", -1)+"]"))
 		} else {
-			s.WriteString(logs.Cyan(" [" + f.String() + "]"))
+			s.WriteString(" " + logs.Cyan("["+f.String()+"]"))
 		}
 	}
 	return s.String()
@@ -216,7 +216,7 @@ func (bl *SprayResult) Format(probes []string) string {
 func (bl *SprayResult) ColorString() string {
 	var line strings.Builder
 	line.WriteString(logs.Green(padding("["+bl.Source.Name()+"]", 10) + "\t"))
-	line.WriteString(logs.YellowBold(strconv.Itoa(bl.Status)))
+	line.WriteString(RenderStatus(strconv.Itoa(bl.Status)))
 	line.WriteString("\t")
 	line.WriteString(logs.YellowBold(strconv.Itoa(bl.BodyLength)))
 	if bl.ExceedLength {
@@ -240,17 +240,17 @@ func (bl *SprayResult) ColorString() string {
 		}
 	}
 
-	line.WriteString(logs.GreenLine(bl.Additional("title")))
+	line.WriteString(" " + logs.GreenLine(strings.TrimSpace(bl.Additional("title"))))
 
 	if bl.Distance != 0 {
-		line.WriteString(logs.GreenLine(bl.Additional("sim")))
+		line.WriteString(" " + logs.GreenLine(strings.TrimSpace(bl.Additional("sim"))))
 	}
 
 	if bl.Reason != "" {
-		line.WriteString(logs.Yellow(" [reason: " + bl.Reason + "]"))
+		line.WriteString(" " + logs.Yellow("[reason: "+bl.Reason+"]"))
 	}
 	if bl.ErrString != "" {
-		line.WriteString(logs.RedBold(" [err: " + bl.ErrString + "]"))
+		line.WriteString(" " + logs.RedBold("[err: "+bl.ErrString+"]"))
 		return line.String()
 	}
 
@@ -387,4 +387,18 @@ func padding(s string, size int) string {
 		return s
 	}
 	return s + strings.Repeat(" ", size-len(s))
+}
+
+func RenderStatus(status string) string {
+	if strings.HasPrefix(status, "2") {
+		return logs.GreenBold(status)
+	} else if strings.HasPrefix(status, "3") {
+		return logs.YellowBold(status)
+	} else if strings.HasPrefix(status, "4") {
+		return logs.Red(status)
+	} else if strings.HasPrefix(status, "5") {
+		return logs.RedBold(status)
+	} else {
+		return logs.Green(status)
+	}
 }
