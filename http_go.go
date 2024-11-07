@@ -12,10 +12,14 @@ import (
 	"strings"
 )
 
-func NewResponse(resp *http.Response) *Response {
+func NewResponse(resp *http.Response, size int64) *Response {
 	r := &Response{
-		Content: NewContent(httputils.ReadRaw(resp)),
-		Resp:    resp,
+		Resp: resp,
+	}
+	if size > 0 {
+		r.Content = NewContent(httputils.ReadRawWithSize(resp, size))
+	} else {
+		r.Content = NewContent(httputils.ReadRaw(resp))
 	}
 
 	if title := MatchTitle(r.Raw); title != "" {
@@ -49,7 +53,7 @@ func NewResponseWithRaw(raw []byte) *Response {
 		return nil
 	}
 
-	return NewResponse(resp)
+	return NewResponse(resp, 0)
 }
 
 type Response struct {
