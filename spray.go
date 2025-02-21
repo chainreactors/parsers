@@ -3,10 +3,12 @@ package parsers
 import (
 	"encoding/csv"
 	"encoding/json"
-	"github.com/chainreactors/fingers/common"
-	"github.com/chainreactors/logs"
+	"fmt"
 	"strconv"
 	"strings"
+
+	"github.com/chainreactors/fingers/common"
+	"github.com/chainreactors/logs"
 )
 
 type SpraySource int
@@ -39,7 +41,7 @@ func (s SpraySource) Name() string {
 	case InitIndexSource:
 		return "index"
 	case RedirectSource:
-		return "redirect"
+		return "redir"
 	case CrawlSource:
 		return "crawl"
 	case FingerSource:
@@ -215,16 +217,14 @@ func (bl *SprayResult) Format(probes []string) string {
 
 func (bl *SprayResult) ColorString() string {
 	var line strings.Builder
-	line.WriteString(logs.Green(padding("["+bl.Source.Name()+"]", 10) + "\t"))
-	line.WriteString(RenderStatus(strconv.Itoa(bl.Status)))
-	line.WriteString("\t")
-	line.WriteString(logs.YellowBold(strconv.Itoa(bl.BodyLength)))
+	line.WriteString(logs.Green(padding("["+bl.Source.Name()+"]", 8)))
+	line.WriteString(RenderStatus(strconv.Itoa(bl.Status)) + " ")
+	line.WriteString(logs.YellowBold(fmt.Sprintf("%4d", bl.BodyLength)))
 	if bl.ExceedLength {
 		line.WriteString(logs.Red("(exceed)"))
 	}
-	line.WriteString("\t")
-	line.WriteString(logs.YellowBold(strconv.Itoa(int(bl.Spended)) + "ms"))
-	line.WriteString("\t")
+	line.WriteString(" ")
+	line.WriteString(logs.YellowBold(fmt.Sprintf("%3d", bl.Spended)) + "ms ")
 	if bl.FrontURL != "" {
 		line.WriteString(logs.Green(bl.FrontURL))
 		line.WriteString(" --> ")
@@ -267,17 +267,14 @@ func (bl *SprayResult) ColorString() string {
 
 func (bl *SprayResult) String() string {
 	var line strings.Builder
-	line.WriteString(padding("["+bl.Source.Name()+"]", 10) + "\t")
-
-	line.WriteString(strconv.Itoa(bl.Status))
-	line.WriteString("\t")
-	line.WriteString(strconv.Itoa(bl.BodyLength))
+	line.WriteString(padding("["+bl.Source.Name()+"]", 8))
+	line.WriteString(fmt.Sprintf("%d", bl.Status))
+	line.WriteString(fmt.Sprintf("%4d", bl.BodyLength))
 	if bl.ExceedLength {
 		line.WriteString("(exceed)")
 	}
-	line.WriteString("\t")
-	line.WriteString(strconv.Itoa(int(bl.Spended)) + "ms")
-	line.WriteString("\t")
+	line.WriteString(" ")
+	line.WriteString(fmt.Sprintf("%3d", int(bl.Spended)) + "ms" + " ")
 	if bl.FrontURL != "" {
 		line.WriteString(" " + bl.FrontURL)
 		line.WriteString(" --> ")
