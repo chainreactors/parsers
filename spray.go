@@ -224,11 +224,11 @@ func (bl *SprayResult) ColorString() string {
 		line.WriteString(logs.Red("(exceed)"))
 	}
 	line.WriteString(" ")
-	line.WriteString(logs.YellowBold(fmt.Sprintf("%3d", bl.Spended)) + "ms ")
-	if bl.FrontURL != "" {
-		line.WriteString(logs.Green(bl.FrontURL))
-		line.WriteString(" --> ")
-	}
+	line.WriteString(logs.YellowBold(fmt.Sprintf("%3d", bl.Spended)) + logs.White("ms") + " ")
+	//if bl.FrontURL != "" {
+	//	line.WriteString(logs.Green(bl.FrontURL))
+	//	line.WriteString(" --> ")
+	//}
 	line.WriteString(logs.GreenBold(bl.UrlString))
 	if bl.Host != "" {
 		line.WriteString(logs.Green(" (" + bl.Host + ")"))
@@ -236,7 +236,7 @@ func (bl *SprayResult) ColorString() string {
 	if bl.RedirectURL != "" {
 		if bl.RedirectURL != "" {
 			line.WriteString(" --> ")
-			line.WriteString(logs.Green(bl.RedirectURL) + " ")
+			line.WriteString(logs.WhiteLine(bl.RedirectURL) + " ")
 		}
 	}
 
@@ -275,10 +275,10 @@ func (bl *SprayResult) String() string {
 	}
 	line.WriteString(" ")
 	line.WriteString(fmt.Sprintf("%3d", int(bl.Spended)) + "ms" + " ")
-	if bl.FrontURL != "" {
-		line.WriteString(" " + bl.FrontURL)
-		line.WriteString(" --> ")
-	}
+	//if bl.FrontURL != "" {
+	//	line.WriteString(" " + bl.FrontURL)
+	//	line.WriteString(" --> ")
+	//}
 	line.WriteString(bl.UrlString)
 	if bl.Host != "" {
 		line.WriteString(" (" + bl.Host + ")")
