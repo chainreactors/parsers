@@ -217,7 +217,7 @@ func (bl *SprayResult) Format(probes []string) string {
 
 func (bl *SprayResult) ColorString() string {
 	var line strings.Builder
-	line.WriteString(logs.Green(padding("["+bl.Source.Name()+"]", 8)))
+	line.WriteString(logs.Green(padding("["+bl.Source.Name()+"]", 9)))
 	line.WriteString(RenderStatus(strconv.Itoa(bl.Status)) + " ")
 	line.WriteString(logs.YellowBold(fmt.Sprintf("%4d", bl.BodyLength)))
 	if bl.ExceedLength {
@@ -267,7 +267,7 @@ func (bl *SprayResult) ColorString() string {
 
 func (bl *SprayResult) String() string {
 	var line strings.Builder
-	line.WriteString(padding("["+bl.Source.Name()+"]", 8))
+	line.WriteString(padding("["+bl.Source.Name()+"]", 9))
 	line.WriteString(fmt.Sprintf("%d", bl.Status))
 	line.WriteString(fmt.Sprintf("%4d", bl.BodyLength))
 	if bl.ExceedLength {
