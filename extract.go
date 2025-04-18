@@ -34,6 +34,14 @@ func (es Extracteds) String() string {
 	return s.String() + " "
 }
 
+func (es Extracteds) Merge(other Extracteds) {
+	for _, e := range other {
+		if len(e.ExtractResult) > 0 {
+			es = append(es, e)
+		}
+	}
+}
+
 type Extractor struct {
 	Name            string           `json:"name"` // extractor name
 	Regexps         []string         `json:"regexps"`
