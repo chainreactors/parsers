@@ -75,16 +75,43 @@ func (e *Extractor) Extract(body string) *Extracted {
 	return extracts
 }
 
+func (e *Extractor) ExtractUnique(body string) *Extracted {
+	extracts := &Extracted{
+		Name: e.Name,
+	}
+	uniqueMatches := make(map[string]struct{})
+
+	for _, r := range e.CompiledRegexps {
+		matches := r.FindAllString(body, -1)
+		for _, match := range matches {
+			uniqueMatches[match] = struct{}{}
+		}
+	}
+
+	// 直接存储去重后的结果
+	extracts.ExtractResult = make([]string, 0, len(uniqueMatches))
+	for match := range uniqueMatches {
+		extracts.ExtractResult = append(extracts.ExtractResult, match)
+	}
+
+	return extracts
+}
+
 type Extractors map[string][]*Extractor
 
-func (es Extractors) Extract(content string) (extracteds []*Extracted) {
+func (es Extractors) Extract(content string, unique bool) (extracteds []*Extracted) {
 	if len(content) == 0 {
 		return
 	}
 
 	for _, extract := range es {
 		for _, e := range extract {
-			extracted := e.Extract(content)
+			var extracted *Extracted
+			if unique {
+				extracted = e.ExtractUnique(content)
+			} else {
+				extracted = e.Extract(content)
+			}
 			if extracted.ExtractResult != nil {
 				extracteds = append(extracteds, extracted)
 			}
