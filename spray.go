@@ -326,18 +326,18 @@ func (sr *SprayResult) ToCSV() string {
 	var sb strings.Builder
 	writer := csv.NewWriter(&sb)
 
-	// Define the header (column names)
-	header := []string{
-		"Number", "IsValid", "IsFuzzy", "UrlString", "Path", "Host",
-		"BodyLength", "ExceedLength", "HeaderLength", "RedirectURL",
-		"FrontURL", "Status", "Spended", "ContentType", "Title",
-		"Frameworks", "Extracteds", "ErrString", "Reason", "Source",
-		"ReqDepth", "Distance", "Unique", "BodySimhash", "BodyMd5",
-		"BodyMmh3",
-	}
-
-	// Write the header to the CSV writer
-	writer.Write(header)
+	//// Define the header (column names)
+	//header := []string{
+	//	"Number", "IsValid", "IsFuzzy", "UrlString", "Path", "Host",
+	//	"BodyLength", "ExceedLength", "HeaderLength", "RedirectURL",
+	//	"FrontURL", "Status", "Spended", "ContentType", "Title",
+	//	"Frameworks", "Extracteds", "ErrString", "Reason", "Source",
+	//	"ReqDepth", "Distance", "Unique", "BodySimhash", "BodyMd5",
+	//	"BodyMmh3",
+	//}
+	//
+	//// Write the header to the CSV writer
+	//writer.Write(header)
 
 	// Convert each field to a string slice
 	record := []string{
