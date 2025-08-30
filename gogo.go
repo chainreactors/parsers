@@ -268,6 +268,7 @@ type GOGOConfig struct {
 	ListFile      string   `json:"list_file"`
 	Threads       int      `json:"threads"` // 线程数
 	Mod           string   `json:"mod"`     // 扫描模式
+	NoScan        bool     `json:"no_scan"`
 	AliveSprayMod []string `json:"alive_spray"`
 	PortSpray     bool     `json:"port_spray"`
 	Exploit       string   `json:"exploit"`
