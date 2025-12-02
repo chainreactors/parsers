@@ -8,6 +8,7 @@ import (
 	"github.com/chainreactors/files"
 	"github.com/chainreactors/fingers/common"
 	"github.com/chainreactors/logs"
+	"strconv"
 	"strings"
 )
 
@@ -72,6 +73,7 @@ type GOGOResult struct {
 	Extracteds map[string][]string `json:"extracted,omitempty"`
 	Title      string              `json:"title,omitempty"`
 	Midware    string              `json:"midware,omitempty"`
+	Timing     int64               `json:"timing,omitempty"`
 }
 
 func (result *GOGOResult) IsHttp() bool {
@@ -157,6 +159,8 @@ func (result *GOGOResult) Get(key string) string {
 		return result.GetBaseURL()
 	case "midware":
 		return result.Midware
+	case "timing":
+		return strconv.FormatInt(result.Timing, 10)
 	case "protocol", "scheme":
 		return result.Protocol
 	case "extract", "extracts":
@@ -187,12 +191,12 @@ func (result *GOGOResult) FramesColorString() string {
 }
 
 func (result *GOGOResult) ColorOutput() string {
-	s := fmt.Sprintf("[+] %s\t%s\t%s\t%s [%s] %s %s\n", result.GetURL(), result.Midware, result.FramesColorString(), result.Host, logs.Yellow(result.Status), logs.GreenLine(result.Title), logs.Red(result.Vulns.String()))
+	s := fmt.Sprintf("[+] %s %s\t%s\t%s\t%s [%s] %s %s\n", logs.Yellow(fmt.Sprintf("[%dms]", result.Timing)), result.GetURL(), result.Midware, result.FramesColorString(), result.Host, logs.Yellow(result.Status), logs.GreenLine(result.Title), logs.Red(result.Vulns.String()))
 	return s
 }
 
 func (result *GOGOResult) FullOutput() string {
-	s := fmt.Sprintf("[+] %s\t%s\t%s\t%s [%s] %s %s %s\n", result.GetURL(), result.Midware, result.Frameworks.String(), result.Host, result.Status, result.Title, result.Vulns.String(), result.GetExtractStat())
+	s := fmt.Sprintf("[+] [%dms] %s\t%s\t%s\t%s [%s] %s %s %s\n", result.Timing, result.GetURL(), result.Midware, result.Frameworks.String(), result.Host, result.Status, result.Title, result.Vulns.String(), result.GetExtractStat())
 	return s
 }
 
