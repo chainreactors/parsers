@@ -7,5 +7,6 @@ require (
 	github.com/chainreactors/fingers v0.0.0-20240702104653-a66e34aa41df
 	github.com/chainreactors/logs v0.0.0-20240207121836-c946f072f81f
 	github.com/chainreactors/utils v0.0.0-20240704062557-662d623b74f4
+	github.com/google/btree v1.0.0 // indirect
 	golang.org/x/text v0.14.0
 )
