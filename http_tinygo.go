@@ -1,16 +1,17 @@
-//go:build go1.17 && !tinygo
-// +build go1.17,!tinygo
+//go:build tinygo
+// +build tinygo
 
 package parsers
 
 import (
 	"bufio"
 	"bytes"
+	"net/http"
+	"strings"
+
 	"github.com/chainreactors/utils/encode"
 	"github.com/chainreactors/utils/httputils"
 	"golang.org/x/text/encoding/simplifiedchinese"
-	"net/http"
-	"strings"
 )
 
 func NewResponse(resp *http.Response, size int64) *Response {
@@ -30,16 +31,10 @@ func NewResponse(resp *http.Response, size int64) *Response {
 		r.Title = MatchCharacter(r.Raw)
 	}
 	r.Server = resp.Header.Get("Server")
-	if resp.TLS != nil {
-		r.SSLHost = resp.TLS.PeerCertificates[0].DNSNames
-	}
 
 	if resp.Request != nil {
 		for resp = resp.Request.Response; resp != nil; {
 			content := NewContent(httputils.ReadRaw(resp))
-			if resp.TLS != nil {
-				content.SSLHost = resp.TLS.PeerCertificates[0].DNSNames
-			}
 			r.History = append(r.History, content)
 			resp = resp.Request.Response
 		}
@@ -60,7 +55,7 @@ func NewResponseWithRaw(raw []byte) *Response {
 type Response struct {
 	Server   string     `json:"server"`
 	Title    string     `json:"title"`
-	HasTitle bool       `json:"-"` // html title: true , bytes[:13]: false
+	HasTitle bool       `json:"-"`
 	History  []*Content `json:"history"`
 	Resp     *http.Response
 	*Content
