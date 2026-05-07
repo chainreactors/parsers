@@ -18,6 +18,15 @@ const (
 	ZombieModPitchfork
 )
 
+const (
+	ZombieFormatJSON            = "json"
+	ZombieFormatJSONLine        = "jl"
+	ZombieFormatCSV             = "csv"
+	ZombieFormatString          = "string"
+	ZombieFormatFull            = "full"
+	ZombieFormatWeakpassFinding = "weakpass-finding"
+)
+
 func (m ZombieTaskMod) String() string {
 	switch m {
 	case ZombieModBrute:
@@ -47,19 +56,39 @@ var ZombieMap = map[string]string{
 	"smb":        "smb",
 	"redis":      "redis",
 	"vnc":        "vnc",
+	"postgres":   "postgresql",
 	"postgresql": "postgresql",
 	"mongo":      "mongo",
+	"mongodb":    "mongo",
 	"ssh":        "ssh",
 	"ftp":        "ftp",
+	"snmp":       "snmp",
+	"ldap":       "ldap",
 	"socks5":     "socks5",
+	"pop3":       "pop3",
 	"rsync":      "rsync",
 	"telnet":     "telnet",
+	"zookeeper":  "zookeeper",
+	"amqp":       "amqp",
+	"mqtt":       "mqtt",
+	"memcached":  "memcached",
 }
 
 // RegisterZombieServiceAlias register alias for zombie service after load templates
 func RegisterZombieServiceAlias() {
 	ZombieMap["tomcat"] = "tomcat"
 	ZombieMap["tomcat-manager"] = "tomcat"
+}
+
+func ZombieServiceFromName(name string) (string, bool) {
+	service := strings.ToLower(strings.TrimSpace(name))
+	if service == "" {
+		return "", false
+	}
+	if mapped, ok := ZombieMap[service]; ok {
+		return mapped, true
+	}
+	return "", false
 }
 
 type ZombieInput struct {
@@ -119,6 +148,23 @@ func (r *ZombieResult) Full() string {
 	return s.String()
 }
 
+func (r *ZombieResult) WeakpassFinding() string {
+	var s strings.Builder
+	s.WriteString("[weakpass] ")
+	s.WriteString(r.URI())
+	if r.Username != "" {
+		s.WriteString(" user=")
+		s.WriteString(r.Username)
+	}
+	if r.Password != "" {
+		s.WriteString(" pass=")
+		s.WriteString(r.Password)
+	}
+	s.WriteString(" mod=")
+	s.WriteString(r.Mod.String())
+	return s.String()
+}
+
 func (r *ZombieResult) Json() string {
 	bs, err := json.Marshal(r)
 	if err != nil {
@@ -130,10 +176,14 @@ func (r *ZombieResult) Json() string {
 
 func (r *ZombieResult) Format(form string) string {
 	switch form {
-	case "json", "jl":
+	case ZombieFormatJSON, ZombieFormatJSONLine:
 		return r.Json()
-	case "csv":
+	case ZombieFormatCSV:
 		return ""
+	case ZombieFormatFull:
+		return r.Full()
+	case ZombieFormatWeakpassFinding:
+		return r.WeakpassFinding()
 	default:
 		return r.String()
 	}

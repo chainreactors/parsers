@@ -200,6 +200,45 @@ func (result *GOGOResult) FullOutput() string {
 	return s
 }
 
+func (result *GOGOResult) String() string {
+	if result == nil {
+		return ""
+	}
+	target := result.GetTarget()
+	if result.IsHttp() {
+		target = result.GetBaseURL()
+	}
+	parts := []string{target}
+	if result.Protocol != "" {
+		parts = append(parts, "proto="+result.Protocol)
+	}
+	if result.Status != "" {
+		parts = append(parts, "status="+result.Status)
+	}
+	if result.Midware != "" {
+		parts = append(parts, "midware="+result.Midware)
+	}
+	if result.Host != "" {
+		parts = append(parts, "host="+result.Host)
+	}
+	if result.Title != "" {
+		parts = append(parts, fmt.Sprintf("title=%q", result.Title))
+	}
+	if frameworks := strings.Trim(result.Frameworks.String(), "|"); frameworks != "" {
+		parts = append(parts, "frameworks="+frameworks)
+	}
+	if vulns := strings.TrimSpace(result.Vulns.String()); vulns != "" {
+		parts = append(parts, "vulns="+vulns)
+	}
+	if extract := strings.TrimSpace(result.GetExtractStat()); extract != "" {
+		parts = append(parts, extract)
+	}
+	if result.Timing > 0 {
+		parts = append(parts, fmt.Sprintf("time=%dms", result.Timing))
+	}
+	return strings.Join(parts, " ")
+}
+
 func (result *GOGOResult) JsonOutput() string {
 	jsons, _ := json.Marshal(result)
 	return string(jsons)
