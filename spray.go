@@ -265,6 +265,48 @@ func (bl *SprayResult) ColorString() string {
 	return line.String()
 }
 
+func (bl *SprayResult) OutputLine() string {
+	if bl == nil {
+		return ""
+	}
+	status := ""
+	if bl.Status > 0 {
+		status = strconv.Itoa(bl.Status)
+	}
+	exceed := ""
+	if bl.ExceedLength {
+		exceed = "exceed"
+	}
+	spended := ""
+	if bl.Spended > 0 {
+		spended = strconv.Itoa(int(bl.Spended)) + "ms"
+	}
+	redirectArrow := ""
+	if bl.RedirectURL != "" {
+		redirectArrow = "->"
+	}
+	distance := ""
+	if bl.Distance != 0 {
+		distance = "sim:" + strconv.Itoa(int(bl.Distance))
+	}
+	return JoinOutput(
+		bl.UrlString,
+		status,
+		strconv.Itoa(bl.BodyLength),
+		exceed,
+		spended,
+		bl.Host,
+		redirectArrow,
+		bl.RedirectURL,
+		bl.Title,
+		distance,
+		bl.Reason,
+		bl.ErrString,
+		FrameworkOutput(bl.Frameworks),
+		strings.TrimSpace(bl.Extracteds.String()),
+	)
+}
+
 func (bl *SprayResult) String() string {
 	var line strings.Builder
 	line.WriteString(padding("["+bl.Source.Name()+"]", 9))

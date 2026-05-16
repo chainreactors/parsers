@@ -165,6 +165,13 @@ func (r *ZombieResult) WeakpassFinding() string {
 	return s.String()
 }
 
+func (r *ZombieResult) OutputLine() string {
+	if r == nil {
+		return ""
+	}
+	return JoinOutput(r.URI(), r.Username, r.Password, r.Service, r.Mod.String())
+}
+
 func (r *ZombieResult) Json() string {
 	bs, err := json.Marshal(r)
 	if err != nil {

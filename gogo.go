@@ -200,6 +200,32 @@ func (result *GOGOResult) FullOutput() string {
 	return s
 }
 
+func (result *GOGOResult) OutputLine() string {
+	if result == nil {
+		return ""
+	}
+	target := result.GetTarget()
+	if result.IsHttp() {
+		target = result.GetBaseURL()
+	}
+	time := ""
+	if result.Timing > 0 {
+		time = fmt.Sprintf("%dms", result.Timing)
+	}
+	return JoinOutput(
+		target,
+		result.Status,
+		result.Protocol,
+		result.Host,
+		result.Midware,
+		result.Title,
+		FrameworkOutput(result.Frameworks),
+		strings.TrimSpace(result.Vulns.String()),
+		strings.TrimSpace(result.GetExtractStat()),
+		time,
+	)
+}
+
 func (result *GOGOResult) String() string {
 	if result == nil {
 		return ""
