@@ -5,20 +5,20 @@ import (
 	"encoding/csv"
 	"encoding/json"
 	"fmt"
-	"github.com/chainreactors/files"
 	"github.com/chainreactors/fingers/common"
 	"github.com/chainreactors/logs"
+	"github.com/chainreactors/utils/fileutils"
 	"strconv"
 	"strings"
 )
 
 func ParseGogoData(filename string) (*GOGOData, error) {
 	var err error
-	file, err := files.Open(filename)
+	file, err := fileutils.Open(filename)
 	if err != nil {
 		return nil, err
 	}
-	content := files.DecryptFile(file, files.Key)
+	content := fileutils.DecryptFile(file, fileutils.Key)
 	content = bytes.TrimSpace(content) // 去除前后空格
 	lines := bytes.Split(content, []byte{0x0a})
 
