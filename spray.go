@@ -258,8 +258,23 @@ func (bl *SprayResult) ColorString() string {
 	line.WriteString(logs.Cyan(bl.Additional("extract")))
 	if len(bl.Extracteds) > 0 {
 		for _, e := range bl.Extracteds {
-			line.WriteString("\n  " + e.Name + " (" + strconv.Itoa(len(e.ExtractResult)) + ") items : \n\t")
-			line.WriteString(logs.GreenLine(strings.Join(e.ExtractResult, "\n\t")))
+			if e.Severity != "" {
+				line.WriteString("\n  [" + e.Severity + "] ")
+			} else {
+				line.WriteString("\n  ")
+			}
+			if len(e.Items) > 0 {
+				line.WriteString(e.Name + " (" + strconv.Itoa(len(e.Items)) + ") items :")
+				for _, item := range e.Items {
+					line.WriteString("\n\t" + logs.GreenLine(item.Value))
+					if item.Ctx != "" {
+						line.WriteString("  <<< " + item.Ctx + " >>>")
+					}
+				}
+			} else {
+				line.WriteString(e.Name + " (" + strconv.Itoa(len(e.ExtractResult)) + ") items : \n\t")
+				line.WriteString(logs.GreenLine(strings.Join(e.ExtractResult, "\n\t")))
+			}
 		}
 	}
 	return line.String()
@@ -348,8 +363,23 @@ func (bl *SprayResult) String() string {
 	line.WriteString(bl.Additional("extract"))
 	if len(bl.Extracteds) > 0 {
 		for _, e := range bl.Extracteds {
-			line.WriteString("\n  " + e.Name + " (" + strconv.Itoa(len(e.ExtractResult)) + ") items : \n\t")
-			line.WriteString(strings.Join(e.ExtractResult, "\n\t"))
+			if e.Severity != "" {
+				line.WriteString("\n  [" + e.Severity + "] ")
+			} else {
+				line.WriteString("\n  ")
+			}
+			if len(e.Items) > 0 {
+				line.WriteString(e.Name + " (" + strconv.Itoa(len(e.Items)) + ") items :")
+				for _, item := range e.Items {
+					line.WriteString("\n\t" + item.Value)
+					if item.Ctx != "" {
+						line.WriteString("  <<< " + item.Ctx + " >>>")
+					}
+				}
+			} else {
+				line.WriteString(e.Name + " (" + strconv.Itoa(len(e.ExtractResult)) + ") items : \n\t")
+				line.WriteString(strings.Join(e.ExtractResult, "\n\t"))
+			}
 		}
 	}
 	return line.String()

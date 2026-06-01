@@ -8,9 +8,18 @@ import (
 	"strings"
 )
 
+type ExtractItem struct {
+	Value  string `json:"value"`
+	Ctx    string `json:"ctx,omitempty"`
+	Line   int    `json:"line,omitempty"`
+	Offset int    `json:"offset,omitempty"`
+}
+
 type Extracted struct {
-	Name          string   `json:"name"`
-	ExtractResult []string `json:"extract_result"`
+	Name          string        `json:"name"`
+	Severity      string        `json:"severity,omitempty"`
+	ExtractResult []string      `json:"extract_result"`
+	Items         []ExtractItem `json:"items,omitempty"`
 }
 
 func (e *Extracted) String() string {
